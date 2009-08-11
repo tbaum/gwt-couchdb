@@ -1,0 +1,144 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>atns.mdes</groupId>
+    <artifactId>abowind</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <gwtVersion>1.7.0</gwtVersion>
+    </properties>
+    <build>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                    <encoding>UTF-8</encoding>
+                    <excludes>
+                        <exclude>javax/servlet/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <!--
+		            <modules>
+                        <module>xxx</module>
+                    </modules>
+		            -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>remove-javax</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${project.build.directory}/classes/javax"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-idea-plugin</artifactId>
+                <configuration>
+                    <linkModules>true</linkModules>
+                    <jdkLevel>1.5</jdkLevel>
+                </configuration>
+            </plugin>
+        </plugins>
+        <finalName>abowind</finalName>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwt-mosaic</artifactId>
+            <version>0.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwt-dnd</artifactId>
+            <version>2.6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwt-incubator</artifactId>
+            <version>1.6_1684</version>
+        </dependency>
+
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwt-beans-binding</artifactId>
+            <version>0.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwtx</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://78.47.129.139:8180/repository/mirror</url>
+        </repository>
+        <repository>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://78.47.129.139:8180/repository/internal</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://78.47.129.139:8180/repository/mirror</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://78.47.129.139:8180/repository/internal</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>

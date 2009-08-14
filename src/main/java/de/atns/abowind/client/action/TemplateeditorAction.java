@@ -1,35 +1,40 @@
 package de.atns.abowind.client.action;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Widget;
 import de.atns.abowind.client.Constants;
-import de.atns.abowind.client.ExtendedMenuItem;
+import de.atns.abowind.client.ViewselectionMenuItem;
+import de.atns.abowind.client.WepComponentsTemplate;
 
 /**
  * @author mleesch
  * @since 13.08.2009 16:21:45
  */
-public class TemplateeditorAction extends ExtendedMenuItem {
+public class TemplateeditorAction extends ViewselectionMenuItem {
+// ------------------------------ FIELDS ------------------------------
 
     private static final Constants c = GWT.create(Constants.class);
 
-    private TemplateeditorAction(String title) {
-        super(title, new Command() {
-            public void execute() {
+    private static ViewselectionMenuItem instance = null;
 
-                Window.alert("huch");
+// -------------------------- STATIC METHODS --------------------------
 
-            }
-        });
-    }
-
-    private static ExtendedMenuItem instance = null;
-
-    public static synchronized ExtendedMenuItem instance() {
+    public static synchronized ViewselectionMenuItem instance() {
         if (instance == null) {
-            instance = new TemplateeditorAction(c.templates());
+            instance = new TemplateeditorAction();
         }
         return instance;
+    }
+
+// --------------------------- CONSTRUCTORS ---------------------------
+
+    public TemplateeditorAction() {
+        super(c.templates());
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    public Widget createContentPanel() {
+        return new WepComponentsTemplate();
     }
 }

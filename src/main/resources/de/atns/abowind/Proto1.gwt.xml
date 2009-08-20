@@ -4,18 +4,15 @@
     <inherits name='com.google.gwt.user.User'/>
     <inherits name='com.google.gwt.core.Core'/>
     <inherits name='com.google.gwt.i18n.I18N'/>
-    <!--     <inherits name='com.googlecode.gwt.math.Math'/>     -->
-    <inherits name="com.google.gwt.json.JSON"/>
 
-    <!-- <inherits name="de.novanic.eventservice.GWTEventService"/>     -->
+    <inherits name="com.google.gwt.json.JSON"/>
 
     <inherits name='com.google.gwt.user.theme.standard.Standard'/>
 
     <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+    
     <inherits name='org.gwt.mosaic.theme.chrome.Chrome'/>
-    <!--
-<inherits name='net.sf.gilead.Adapter4Gwt15'/>
-    -->
+
     <inherits name='org.gwt.mosaic.Mosaic'/>
     <inherits name='org.gwt.mosaic.actions.Actions'/>
     <inherits name='org.gwt.mosaic.forms.Forms'/>
@@ -30,22 +27,14 @@
     <inherits name="com.google.gwt.user.Debug"/>
     <set-property name="gwt.enableDebugId" value="true"/>
 
-    <!-- <inherits name="com.google.gwt.gears.Gears"/>  -->
-    <!-- Specify the app entry point class -->
-    <entry-point class="de.atns.abowind.client.Proto1"/>
-    <source path="client"/>
-    <source path="model"/>
+    <inherits name="de.atns.abowind.Model"/>
+
+    <entry-point class="de.atns.abowind.proto1.Proto1"/>
+    <source path="proto1"/>
     <public path="public"/>
 
     <stylesheet src='Proto1.css'/>
     <script src='json2.js'/>
     <script src='couch.js'/>
-
-    <!--
-<replace-with class="de.atns.crm.update.client.UpdateNoGears">
-    <when-type-is class="de.atns.crm.update.client.Update"/>
-    <when-property-is name="gears.installed" value="false"/>
-</replace-with>
-    -->
 
 </module>

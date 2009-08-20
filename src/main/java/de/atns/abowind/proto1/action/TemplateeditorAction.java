@@ -1,10 +1,10 @@
-package de.atns.abowind.client.action;
+package de.atns.abowind.proto1.action;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
-import de.atns.abowind.client.Constants;
-import de.atns.abowind.client.ViewselectionMenuItem;
-import de.atns.abowind.client.WepComponentsTemplate;
+import de.atns.abowind.proto1.TemplateDesignerPanel;
+import de.atns.abowind.proto1.ViewselectionMenuItem;
+import de.atns.abowind.proto1.constants.Menu;
 
 /**
  * @author mleesch
@@ -13,7 +13,7 @@ import de.atns.abowind.client.WepComponentsTemplate;
 public class TemplateeditorAction extends ViewselectionMenuItem {
 // ------------------------------ FIELDS ------------------------------
 
-    private static final Constants c = GWT.create(Constants.class);
+    private static final Menu c = GWT.create(Menu.class);
 
     private static ViewselectionMenuItem instance = null;
 
@@ -35,6 +35,6 @@ public class TemplateeditorAction extends ViewselectionMenuItem {
 // -------------------------- OTHER METHODS --------------------------
 
     public Widget createContentPanel() {
-        return new WepComponentsTemplate();
+        return new TemplateDesignerPanel();
     }
 }

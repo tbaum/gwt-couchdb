@@ -30,34 +30,14 @@
                 <artifactId>gwt-maven-plugin</artifactId>
                 <version>1.1</version>
                 <configuration>
-                    <!--
-		            <modules>
-                        <module>xxx</module>
+                    <modules>
+                        <module>de.atns.abowind.Proto1</module>
                     </modules>
-		            -->
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>remove-javax</id>
-                        <phase>compile</phase>
-                        <configuration>
-                            <tasks>
-                                <delete dir="${project.build.directory}/classes/javax"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -91,7 +71,7 @@
         <dependency>
             <groupId>atns.ext</groupId>
             <artifactId>gwt-mosaic</artifactId>
-            <version>0.2.2</version>
+            <version>0.2.2-1023</version>
         </dependency>
         <dependency>
             <groupId>atns.ext</groupId>

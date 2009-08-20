@@ -9,7 +9,7 @@ function(newDoc, oldDoc, userCtx) {
 
 
     if (newDoc.type == "user") {
-    //    require("name", "path");
+        //    require("name", "path");
     }
     else  if (newDoc.type == "template") {
         require("name", "path");

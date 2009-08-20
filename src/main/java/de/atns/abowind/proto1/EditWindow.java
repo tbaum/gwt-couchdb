@@ -1,4 +1,4 @@
-package de.atns.abowind.client;
+package de.atns.abowind.proto1;
 
 import com.google.gwt.user.client.ui.*;
 import org.gwt.mosaic.ui.client.WindowPanel;
@@ -98,10 +98,7 @@ public class EditWindow extends WindowPanel {
         //  model.updateDisplay();
     }
 
-// ------------------------ INTERFACE METHODS ------------------------
-
-
-// --------------------- Interface EditListener ---------------------
+// -------------------------- OTHER METHODS --------------------------
 
     /*  public void setList(Set<EntityB> list) {
         messagesListBox.clear();

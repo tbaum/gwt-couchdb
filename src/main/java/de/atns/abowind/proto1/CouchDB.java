@@ -1,8 +1,6 @@
-package de.atns.abowind.client;
+package de.atns.abowind.proto1;
 
 import com.google.gwt.core.client.JavaScriptObject;
-
-import java.util.Map;
 
 /**
  * @author tbaum

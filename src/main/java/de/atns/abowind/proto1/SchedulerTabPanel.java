@@ -1,5 +1,4 @@
-package de.atns.abowind.client;
-
+package de.atns.abowind.proto1;
 
 
 import com.google.gwt.user.client.ui.Composite;

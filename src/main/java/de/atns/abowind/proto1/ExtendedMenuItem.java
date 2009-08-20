@@ -1,4 +1,4 @@
-package de.atns.abowind.client;
+package de.atns.abowind.proto1;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
@@ -38,11 +38,11 @@ public class ExtendedMenuItem extends MenuItem {
         this.enabled = enabled;
         if (enabled) {
             unsinkEvents(EVENT_MASK);
-            setStyleName("gwt-MenuItem");
+            //      setStyleName("gwt-MenuItem");
             setCommand(cmd);
         } else {
             sinkEvents(EVENT_MASK);
-            setStyleName("gwt-MenuItem-disabled");
+            //    setStyleName("gwt-MenuItem-disabled");
             setCommand(dummyCmd);
         }
     }

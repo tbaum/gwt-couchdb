@@ -1,7 +1,7 @@
 package de.atns.abowind.proto1;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
+import static com.google.gwt.user.client.DeferredCommand.addCommand;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -89,7 +89,7 @@ public class Application extends Viewport {
             contentPanel.add(widget);
         }
 
-        DeferredCommand.addCommand(new Command() {
+        addCommand(new Command() {
             public void execute() {
                 layout();
             }

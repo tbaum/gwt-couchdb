@@ -10,7 +10,7 @@ import de.atns.abowind.proto1.constants.Menu;
  * @author mleesch
  * @since 13.08.2009 16:21:45
  */
-public class InspectionStartAction extends ViewselectionMenuItem {
+public class InspectionPoolAction extends ViewselectionMenuItem {
 // ------------------------------ FIELDS ------------------------------
 
     private static final Menu c = GWT.create(Menu.class);
@@ -21,14 +21,14 @@ public class InspectionStartAction extends ViewselectionMenuItem {
 
     public static synchronized ViewselectionMenuItem instance() {
         if (instance == null) {
-            instance = new InspectionStartAction();
+            instance = new InspectionPoolAction();
         }
         return instance;
     }
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    private InspectionStartAction() {
+    private InspectionPoolAction() {
         super(c.inspection());
     }
 

@@ -1,10 +1,12 @@
 package de.atns.abowind.proto1;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
-import de.atns.abowind.proto1.action.InspectionStartAction;
+import de.atns.abowind.proto1.action.InspectionPoolAction;
 import de.atns.abowind.proto1.action.TemplateeditorAction;
 import static de.atns.abowind.proto1.constants.Menu.MENU;
 import org.gwt.mosaic.ui.client.Viewport;
@@ -52,7 +54,7 @@ public class Application extends Viewport {
         MenuBar menuBar = new MenuBar();
 
         menuBar.addItem(MENU.inspection(), menu(
-                InspectionStartAction.instance()
+                InspectionPoolAction.instance()
         ));
 
         menuBar.addItem(MENU.administration(), menu(
@@ -86,5 +88,11 @@ public class Application extends Viewport {
         } else {
             contentPanel.add(widget);
         }
+
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                layout();
+            }
+        });
     }
 }

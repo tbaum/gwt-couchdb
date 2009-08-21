@@ -2,7 +2,6 @@ package de.atns.abowind.proto1;
 
 import com.allen_sauer.gwt.dnd.client.AbstractDragController;
 import com.allen_sauer.gwt.dnd.client.DragController;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.allen_sauer.gwt.dnd.client.util.Location;
 import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
@@ -61,18 +60,18 @@ public class TemplateDesignerPanel extends LayoutPanel {
             }
 
             DOMUtil.fastSetElementPosition(movablePanel.getElement(), desiredLeft, desiredTop);
-                        /*
-            DropController newDropController = getIntersectDropController(context.mouseX, context.mouseY);
-            if (context.dropController != newDropController) {
-                if (context.dropController != null) {
-                    context.dropController.onLeave(context);
-                }
-                context.dropController = newDropController;
-                if (context.dropController != null) {
-                    context.dropController.onEnter(context);
-                }
-            }
-                          */
+            /*
+DropController newDropController = getIntersectDropController(context.mouseX, context.mouseY);
+if (context.dropController != newDropController) {
+  if (context.dropController != null) {
+      context.dropController.onLeave(context);
+  }
+  context.dropController = newDropController;
+  if (context.dropController != null) {
+      context.dropController.onEnter(context);
+  }
+}
+            */
             if (context.dropController != null) {
                 context.dropController.onMove(context);
             }

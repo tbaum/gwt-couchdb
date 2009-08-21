@@ -10,7 +10,7 @@
     <inherits name='com.google.gwt.user.theme.standard.Standard'/>
 
     <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
-    
+
     <inherits name='org.gwt.mosaic.theme.chrome.Chrome'/>
 
     <inherits name='org.gwt.mosaic.Mosaic'/>

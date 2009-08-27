@@ -69,14 +69,20 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.code.gwt-dnd</groupId>
+            <artifactId>gwt-dnd</artifactId>
+            <version>2.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gwtx</groupId>
+            <artifactId>gwtx</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>atns.ext</groupId>
             <artifactId>gwt-mosaic</artifactId>
             <version>0.2.2-1023</version>
-        </dependency>
-        <dependency>
-            <groupId>atns.ext</groupId>
-            <artifactId>gwt-dnd</artifactId>
-            <version>2.6.5</version>
         </dependency>
         <dependency>
             <groupId>atns.ext</groupId>
@@ -88,11 +94,6 @@
             <groupId>atns.ext</groupId>
             <artifactId>gwt-beans-binding</artifactId>
             <version>0.2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>atns.ext</groupId>
-            <artifactId>gwtx</artifactId>
-            <version>1.5.2</version>
         </dependency>
     </dependencies>
 

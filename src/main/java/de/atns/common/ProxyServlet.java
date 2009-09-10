@@ -17,6 +17,8 @@ import java.util.Enumeration;
 public class ProxyServlet implements Servlet {
 // ------------------------------ FIELDS ------------------------------
 
+    private static final String HOST = "10.2.3.145";
+    private static final int PORT = 5984;
     private ServletConfig config;
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -40,7 +42,7 @@ public class ProxyServlet implements Servlet {
         if (request.getQueryString() != null) {
             uri += "?" + request.getQueryString();
         }
-        final URL url = new URL(request.getScheme(), request.getServerName(), 5984, uri);
+        final URL url = new URL(request.getScheme(), HOST, PORT, uri);
 
         HttpURLConnection http = (HttpURLConnection) url.openConnection();
         http.setAllowUserInteraction(false);

@@ -37,4 +37,7 @@
     <script src='json2.js'/>
     <script src='couch.js'/>
 
+    <set-configuration-property name='compiler.max.vars.per.var'
+                                value='2400'/>
+
 </module>

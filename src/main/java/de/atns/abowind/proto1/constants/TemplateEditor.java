@@ -16,5 +16,7 @@ public interface TemplateEditor extends Messages {
 
     String create();
 
+    String question();
+
     String structure();
 }

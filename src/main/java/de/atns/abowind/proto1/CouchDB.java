@@ -18,9 +18,12 @@ public class CouchDB extends JavaScriptObject {
 
 // -------------------------- OTHER METHODS --------------------------
 
+    //TODO create own exception-tree
     public final native <T extends JavaScriptObject> T open(String id) /*-{ return this.open(id); }-*/;
 
     public final native <T extends JavaScriptObject> T view(String name) /*-{ return this.view(name); }-*/;
 
     public final native <T extends JavaScriptObject> T view(String name, ViewOptions options) /*-{ return this.view(name,options); }-*/;
+
+    public final native <T extends JavaScriptObject> SaveResult save(T document) throws Exception /*-{ return this.save(document); }-*/;
 }

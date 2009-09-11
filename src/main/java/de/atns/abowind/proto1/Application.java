@@ -1,14 +1,17 @@
 package de.atns.abowind.proto1;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import static com.google.gwt.user.client.DeferredCommand.addCommand;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.JavaScriptObject;
 import de.atns.abowind.proto1.action.InspectionPoolAction;
 import de.atns.abowind.proto1.action.TemplateeditorAction;
 import static de.atns.abowind.proto1.constants.Menu.MENU;
+import de.atns.abowind.model.Template;
 import org.gwt.mosaic.ui.client.Viewport;
 import org.gwt.mosaic.ui.client.layout.BoxLayout;
 import org.gwt.mosaic.ui.client.layout.BoxLayoutData;

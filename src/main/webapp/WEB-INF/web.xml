@@ -18,6 +18,10 @@
         <servlet-name>proxy</servlet-name>
         <url-pattern>/abowind/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>proxy</servlet-name>
+        <url-pattern>/_uuids</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>remoteLoggingService</servlet-name>
@@ -27,6 +31,8 @@
         <servlet-name>remoteLoggingService</servlet-name>
         <url-pattern>/de.atns.abowind.Proto1/logging</url-pattern>
     </servlet-mapping>
+ 
+
 
 </web-app>
 

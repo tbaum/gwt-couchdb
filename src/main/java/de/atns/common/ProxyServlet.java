@@ -67,7 +67,7 @@ public class ProxyServlet implements Servlet {
         try {
             http.setDoInput(true);
             InputStream in = request.getInputStream();
-            if ("POST".equals(request.getMethod())) {
+            if ("PUT".equals(request.getMethod()) || "POST".equals(request.getMethod())) {
                 http.setDoOutput(true);
                 copy(in, http.getOutputStream());
             }
@@ -81,7 +81,7 @@ public class ProxyServlet implements Servlet {
         final int code = http.getResponseCode();
         response.setStatus(code, http.getResponseMessage());
 
-        if (proxy_in == null && code == 200) {
+        if (proxy_in == null && code / 10 == 20) {
             try {
                 proxy_in = http.getInputStream();
             }

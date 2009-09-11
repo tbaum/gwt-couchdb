@@ -5,4 +5,8 @@
     <inherits name="org.gwt.mosaic.ui.UI"/>
 
     <source path="model"/>
+
+    
+    <set-configuration-property name='compiler.max.vars.per.var'
+                                value='2400'/>
 </module>

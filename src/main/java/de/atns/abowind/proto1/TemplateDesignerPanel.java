@@ -10,17 +10,15 @@ import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.xml.client.Document;
 import de.atns.abowind.model.Template;
 import de.atns.abowind.model.TemplateSelection;
 import de.atns.abowind.model.ViewResult;
 import de.atns.abowind.model.ViewResultEntry;
 import de.atns.abowind.proto1.constants.ButtonImages;
 import de.atns.abowind.proto1.constants.Menu;
+import static de.atns.abowind.proto1.constants.ButtonImages.BUTTON_IMAGES;
 import static de.atns.abowind.proto1.constants.TemplateEditor.ACTION;
 import org.gwt.mosaic.actions.client.Action;
 import org.gwt.mosaic.actions.client.ButtonBindings;
@@ -126,103 +124,106 @@ if (context.dropController != newDropController) {
     public TemplateDesignerPanel() {
         super(new BorderLayout());
 
-        createNodeActionInside = new CommandAction("", new Command() {
-            public void execute() {
-                //InfoPanel.show("Action", "jipeee");
+        try {
+            createNodeActionInside = new CommandAction("", new Command() {
+                public void execute() {
+                    //InfoPanel.show("Action", "jipeee");
 
-                if (selectedItem != null) {
-                    Object o = selectedItem.getUserObject();
-                    if (o instanceof Template) {
-                        Template template = (Template) o;
+                    if (selectedItem != null) {
+                        Object o = selectedItem.getUserObject();
+                        if (o instanceof Template) {
+                            Template template = (Template) o;
 
-                        Template nt = Template.create();
-                        nt.setPath(template.getPath());
-                        nt.setName(newStructureName.getText());
+                            Template nt = Template.create();
+                            nt.setPath(template.getPath());
+                            nt.setName(newStructureName.getText());
 
-                        try {
-                            SaveResult res = Application.DB.save(nt);
-                            System.err.println("saved nt " + nt.getId());
+                            try {
+                                SaveResult res = Application.DB.save(nt);
+                                System.err.println("saved nt " + nt.getId());
 
-                            Template nt2 = Application.DB.open(res.getId());
-                            JsArrayString pt = nt2.getPath();
-                            pt.set(pt.length(), res.getId());
+                                Template nt2 = Application.DB.open(res.getId());
+                                JsArrayString pt = nt2.getPath();
+                                pt.set(pt.length(), res.getId());
 
-                            Application.DB.save(nt2);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                                Application.DB.save(nt2);
+                                updateTemplateTree();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
 
-        createNodeActionInside.setEnabled(false);
-        createNodeActionInside.putValue(Action.SHORT_DESCRIPTION, "A short description");
-        createNodeActionInside.putValue(Action.SMALL_ICON, CommandAction.ACTION_IMAGES.cut_action());
-
-
-        createNodeActionAfter = new CommandAction("", new Command() {
-            public void execute() {
-                if (selectedItem != null) {
-                    Object o = selectedItem.getUserObject();
-                    if (o instanceof Template) {
-                        Template template = (Template) o;
+            createNodeActionInside.setEnabled(false);
+            createNodeActionInside.putValue(Action.SHORT_DESCRIPTION, "A short description");
+            createNodeActionInside.putValue(Action.SMALL_ICON, BUTTON_IMAGES.insertInside());
 
 
-                        Template nt = Template.create();
-                        nt.setName(newStructureName.getText());
-                        nt.setPath(template.getPath());
+            createNodeActionAfter = new CommandAction("", new Command() {
+                public void execute() {
+                    if (selectedItem != null) {
+                        Object o = selectedItem.getUserObject();
+                        if (o instanceof Template) {
+                            Template template = (Template) o;
 
-                        try {
-                            SaveResult res = Application.DB.save(nt);
-                            System.err.println("saved nt " + nt.getId());
 
-                            Template nt2 = Application.DB.open(res.getId());
-                            JsArrayString pt = nt2.getPath();
-                            pt.set(pt.length() - 1, res.getId());
+                            Template nt = Template.create();
+                            nt.setName(newStructureName.getText());
+                            nt.setPath(template.getPath());
 
-                            Application.DB.save(nt2);
+                            try {
+                                SaveResult res = Application.DB.save(nt);
+                                System.err.println("saved nt " + nt.getId());
 
-                            updateData();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                                Template nt2 = Application.DB.open(res.getId());
+                                JsArrayString pt = nt2.getPath();
+                                pt.set(pt.length() - 1, res.getId());
+
+                                Application.DB.save(nt2);
+                                updateTemplateTree();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
 
-        createNodeActionAfter.setEnabled(false);
-        createNodeActionAfter.putValue(Action.SHORT_DESCRIPTION, "A short description");
-        createNodeActionAfter.putValue(Action.SMALL_ICON, CommandAction.ACTION_IMAGES.cut_action());
+            createNodeActionAfter.setEnabled(false);
+            createNodeActionAfter.putValue(Action.SHORT_DESCRIPTION, "A short description");
+            createNodeActionAfter.putValue(Action.SMALL_ICON, BUTTON_IMAGES.insertAfter());
 
 
-        currentTemplateTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
-            public void onSelection
-                    (
-                            final SelectionEvent<TreeItem> treeItemSelectionEvent) {
-                final TreeItem selected = treeItemSelectionEvent.getSelectedItem();
-                System.err.println(selected);
+            currentTemplateTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+                public void onSelection(final SelectionEvent<TreeItem> treeItemSelectionEvent) {
+                    final TreeItem selected = treeItemSelectionEvent.getSelectedItem();
+                    System.err.println(selected);
 
-                if (selected != null) {
-                    createNodeActionAfter.setEnabled(true);
-                    createNodeActionInside.setEnabled(true);
+                    if (selected != null) {
+                        createNodeActionAfter.setEnabled(true);
+                        createNodeActionInside.setEnabled(true);
 
-                    selectedItem = selected;
+                        selectedItem = selected;
+                    }
                 }
+            });
+
+            add(createControlPanel(), new BorderLayoutData(NORTH, true));
+
+            add(createToolPanel(), new BorderLayoutData(EAST, true));
+
+            add(createTreeTable(), new BorderLayoutData(CENTER));
+
+            updateData();
+
+            if (templateSelection.size() > 0) {
+                templateSelection.setSelectedItem(templateSelection.get(0));
             }
-        });
 
-        add(createControlPanel(), new BorderLayoutData(NORTH, true));
-
-        add(createToolPanel(), new BorderLayoutData(EAST, true));
-
-        add(createTreeTable(), new BorderLayoutData(CENTER));
-
-        updateData();
-
-        if (templateSelection.size() > 0) {
-            templateSelection.setSelectedItem(templateSelection.get(0));
+        } catch (Exception e) {
+            Window.alert(e.getMessage());
         }
     }
 
@@ -245,15 +246,7 @@ if (context.dropController != newDropController) {
 
         templateSelection.addListDataListener(new ListDataListener() {
             public void contentsChanged(ListDataEvent listDataEvent) {
-                final TemplateSelection item = templateSelection.getSelectedItem();
-
-                if (item != null) {
-                    currentTemplateTree.removeItems();
-                    //        currentTemplateTree.resize(0, 1);
-
-                    ViewResult<Template> t = Application.DB.view("couch/template", ViewOptions.create(item.getId()));
-                    createTree(currentTemplateTree, t.toList(), item.getId(), 0);
-                }
+                updateTemplateTree();
             }
 
             public void intervalAdded(ListDataEvent listDataEvent) {
@@ -263,28 +256,55 @@ if (context.dropController != newDropController) {
             }
         });
 
-        LayoutPanel controls = new LayoutPanel(new FormLayout("p, p,3dlu, right:pref:grow,3dlu,p, 3dlu", "p"));
-        final Label label = new Label("Choose Template");
-        label.setWidth("170px");
-        controls.add(label, xy(1,1));
+        LayoutPanel controls = new LayoutPanel(new FormLayout("130px, p,3dlu, right:pref:grow,3dlu,p, 3dlu", "p"));
+        controls.add(new Label("Choose Template"), xy(1, 1));
         controls.add(templateSelector, xy(2, 1));
         final Button addButton = new Button(
                 createButtonLabel(
-                        ButtonImages.BUTTON_IMAGES.addTemplate(),
+                        BUTTON_IMAGES.addTemplate(),
                         Menu.MENU.templateAdd(),
                         TEXT_ON_RIGHT)
         );
 
 
+        newTemplateName = new TextBox();
+        controls.add(newTemplateName, xy(4, 1));
+
         addButton.addClickHandler(new ClickHandler() {
             public void onClick(final ClickEvent clickEvent) {
+                Template template = Template.create();
+                template.setName(newTemplateName.getText());
+                template.setPath("");
+                try {
 
+                    SaveResult res = Application.DB.save(template);
+
+                    Window.alert(newTemplateName.getText());
+                    Template nt2 = Application.DB.open(res.getId());
+                    nt2.getPath().set(0, res.getId());
+
+                    Application.DB.save(nt2);
+
+
+                    updateTemplateTree();
+                    final TemplateSelection item = new TemplateSelection(nt2.getName(), nt2.getId());
+                    // templateSelection.add(item);
+
+                    /*
+                     DeferredCommand.addCommand(new Command() {
+                 public void execute() {
+
+                 }  } );*/
+                    updateData();
+
+                    templateSelection.setSelectedItem(item);
+                }
+                catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
             }
         });
 
-
-        newTemplateName = new TextBox();
-        controls.add(newTemplateName, xy(5, 1));
 
         controls.add(addButton, xy(6, 1));
 
@@ -294,7 +314,7 @@ if (context.dropController != newDropController) {
         //image.addMouseListener(new TooltipListener("dsfadsf", 5000));
         //controls.add(image, xy(5, 1));
 
-        dragController.makeDraggable(addButton);
+        //  dragController.makeDraggable(addButton);
 
 
         /*     final Element e = templateSelector.getElement();
@@ -312,6 +332,25 @@ if (context.dropController != newDropController) {
 //        Window.alert(controls.getElement().toString());
 
         return controls;
+    }
+
+    private void updateTemplateTree() {
+        final TemplateSelection item = templateSelection.getSelectedItem();
+
+        if (item != null) {
+            /*DeferredCommand.addCommand(new Command() {
+                public void execute() {
+              */
+            currentTemplateTree.removeItems();
+            //        currentTemplateTree.resize(0, 1);
+
+            ViewResult<Template> t = Application.DB.view("couch/template", ViewOptions.create(item.getId()));
+            createTree(currentTemplateTree, t.toList(), item.getId(), 0);
+
+            //          }
+            //        });
+
+        }
     }
 
     private void createTree(Tree root, final List<Template> result, String parent, final int dep) {

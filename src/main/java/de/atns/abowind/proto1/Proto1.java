@@ -5,17 +5,20 @@ import com.google.gwt.user.client.ui.RootPanel;
 import static de.atns.abowind.proto1.Application.application;
 import de.atns.abowind.proto1.action.InspectionPoolAction;
 import de.atns.abowind.proto1.action.TemplateeditorAction;
+import org.gwt.beansbinding.core.client.util.GWTBeansBinding;
 
 
 public class Proto1 implements EntryPoint {
 // ------------------------ INTERFACE METHODS ------------------------
 
-
+    static {
+        GWTBeansBinding.init();
+    }
 // --------------------- Interface EntryPoint ---------------------
 
     public void onModuleLoad() {
         application().attach();
-     //   InspectionPoolAction.instance().execute();
+        //   InspectionPoolAction.instance().execute();
         RootPanel.get("splash").setVisible(false);
 
         TemplateeditorAction.instance().execute();

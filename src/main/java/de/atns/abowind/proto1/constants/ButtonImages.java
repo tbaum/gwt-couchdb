@@ -16,4 +16,6 @@ public interface ButtonImages extends ImageBundle {
 // -------------------------- OTHER METHODS --------------------------
 
     AbstractImagePrototype addTemplate();
+    AbstractImagePrototype insertInside();
+    AbstractImagePrototype insertAfter();
 }

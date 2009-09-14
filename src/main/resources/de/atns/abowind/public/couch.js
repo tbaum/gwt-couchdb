@@ -21,6 +21,10 @@ function CouchDB(name, httpHeaders) {
     // use this to check result http status and headers.
     this.last_req = null;
 
+    this.newUuid = function () {
+        return CouchDB.newUuids(1)[0];
+    }
+
     this.request = function(method, uri, requestOptions) {
         requestOptions = requestOptions || {}
         requestOptions.headers = combine(requestOptions.headers, httpHeaders)

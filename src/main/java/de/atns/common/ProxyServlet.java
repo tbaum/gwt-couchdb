@@ -17,7 +17,7 @@ import java.util.Enumeration;
 public class ProxyServlet implements Servlet {
 // ------------------------------ FIELDS ------------------------------
 
-    private static final String HOST = "10.2.3.145";
+    private static final String HOST = "127.0.0.1";
     private static final int PORT = 5984;
     private ServletConfig config;
 

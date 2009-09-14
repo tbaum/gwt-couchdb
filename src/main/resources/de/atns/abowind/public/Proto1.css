@@ -2,6 +2,10 @@
     background-color: red;
 }
 
+.selected {
+    background-color: lightblue;
+}
+
 /*
 body {
     background-color: white;

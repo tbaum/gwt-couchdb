@@ -13,6 +13,6 @@ while (sleep 0.5); do
 	mkdir target/couch
     cp -r src/main/couch/* target/couch/
     cp -r target/abowind/de.atns.abowind.Proto1 target/couch/_attachments
-	couchapp push target/couch http://admin:develop@10.2.3.145:5984/abowind
+	couchapp push target/couch http://admin:develop@127.0.0.1:5984/abowind
     fi
 done

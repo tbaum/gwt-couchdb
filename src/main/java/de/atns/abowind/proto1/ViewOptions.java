@@ -15,23 +15,27 @@ public class ViewOptions extends JavaScriptObject {
         return JavaScriptObject.createObject().cast();
     }
 
-    public static ViewOptions create(String docName) {
+    public static ViewOptions create(String... docName) {
         ViewOptions opts = create();
         opts.setStartkey(docName);
         opts.setEndkey(docName);
         return opts;
     }
 
-    public final void setStartkey(String docName) {
-        JsArray r = JavaScriptObject.createArray().cast();
-        r.<JsArrayString>cast().set(0, docName);
+    public final void setStartkey(String... docName) {
+        JsArrayString r = JavaScriptObject.createArray().cast();
+        for (int i = 0, docNameLength = docName.length; i < docNameLength; i++) {
+            r.set(i, docName[i]);
+        }
         setStartkey(r);
     }
 
-    public final void setEndkey(String docName) {
-        JsArray<JavaScriptObject> r = JavaScriptObject.createArray().cast();
-        r.<JsArrayString>cast().set(0, docName);
-        r.set(1, JavaScriptObject.createObject());
+    public final void setEndkey(String... docName) {
+        JsArrayString r = JavaScriptObject.createArray().cast();
+        for (int i = 0, docNameLength = docName.length; i < docNameLength; i++) {
+            r.set(i, docName[i]);
+        }
+        r.<JsArray<JavaScriptObject>>cast().set(docName.length, JavaScriptObject.createObject());
         setEndkey(r);
     }
 
@@ -42,9 +46,9 @@ public class ViewOptions extends JavaScriptObject {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public final native void setEndkey(JsArray endkey) /*-{ this.endkey=endkey; }-*/;
+    public final native void setEndkey(JsArrayString endkey) /*-{ this.endkey=endkey; }-*/;
 
     public final native void setKey(String key) /*-{ this.key=key; }-*/;
 
-    public final native void setStartkey(JsArray startkey) /*-{ this.startkey=startkey; }-*/;
+    public final native void setStartkey(JsArrayString startkey) /*-{ this.startkey=startkey; }-*/;
 }

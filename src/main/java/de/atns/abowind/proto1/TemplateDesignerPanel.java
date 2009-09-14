@@ -1,25 +1,18 @@
 package de.atns.abowind.proto1;
 
-import com.allen_sauer.gwt.dnd.client.AbstractDragController;
-import com.allen_sauer.gwt.dnd.client.DragController;
-import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
-import com.allen_sauer.gwt.dnd.client.util.Location;
-import com.allen_sauer.gwt.dnd.client.util.WidgetLocation;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.user.client.*;
-import com.google.gwt.user.client.ui.*;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
 import de.atns.abowind.model.Template;
 import de.atns.abowind.model.TemplateSelection;
-import de.atns.abowind.model.ViewResult;
-import de.atns.abowind.model.ViewResultEntry;
-import de.atns.abowind.proto1.constants.ButtonImages;
-import de.atns.abowind.proto1.constants.Menu;
 import static de.atns.abowind.proto1.constants.ButtonImages.BUTTON_IMAGES;
+import de.atns.abowind.proto1.constants.Menu;
 import static de.atns.abowind.proto1.constants.TemplateEditor.ACTION;
+import de.atns.abowind.proto1.model.DecoratedTemplate;
 import org.gwt.mosaic.actions.client.Action;
 import org.gwt.mosaic.actions.client.ButtonBindings;
 import org.gwt.mosaic.actions.client.CommandAction;
@@ -41,6 +34,7 @@ import org.gwt.mosaic.ui.client.util.ButtonHelper;
 import static org.gwt.mosaic.ui.client.util.ButtonHelper.ButtonLabelType.TEXT_ON_RIGHT;
 import static org.gwt.mosaic.ui.client.util.ButtonHelper.createButtonLabel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,73 +45,29 @@ public class TemplateDesignerPanel extends LayoutPanel {
 // ------------------------------ FIELDS ------------------------------
 
     private final Tree currentTemplateTree = new Tree();
-    private DragController dragController = new AbstractDragController(this) {
-        public void dragMove() {
-            if (1 > 0) return;
 
-            // may have changed due to scrollIntoView() or developer driven changes
-            calcBoundaryOffset();
-
-            int desiredLeft = context.desiredDraggableX - boundaryOffsetX;
-            int desiredTop = context.desiredDraggableY - boundaryOffsetY;
-            if (getBehaviorConstrainedToBoundaryPanel()) {
-                desiredLeft = Math.max(0, Math.min(desiredLeft, dropTargetClientWidth
-                        - context.draggable.getOffsetWidth()));
-                desiredTop = Math.max(0, Math.min(desiredTop, dropTargetClientHeight
-                        - context.draggable.getOffsetHeight()));
-            }
-
-            DOMUtil.fastSetElementPosition(movablePanel.getElement(), desiredLeft, desiredTop);
-            /*
-DropController newDropController = getIntersectDropController(context.mouseX, context.mouseY);
-if (context.dropController != newDropController) {
-  if (context.dropController != null) {
-      context.dropController.onLeave(context);
-  }
-  context.dropController = newDropController;
-  if (context.dropController != null) {
-      context.dropController.onEnter(context);
-  }
-}
-            */
-            if (context.dropController != null) {
-                context.dropController.onMove(context);
+    private final CommandAction createNodeActionInside = createCommand(new Command() {
+        public void execute() {
+            if (selectedItem != null) {
+                createTemplate(selectedItem, newStructureName.getText());
             }
         }
+    }, BUTTON_IMAGES.insertInside());
 
-        private void calcBoundaryOffset() {
-            Location widgetLocation = new WidgetLocation(context.boundaryPanel, null);
-            boundaryOffsetX = widgetLocation.getLeft()
-                    + DOMUtil.getBorderLeft(context.boundaryPanel.getElement());
-            boundaryOffsetY = widgetLocation.getTop()
-                    + DOMUtil.getBorderTop(context.boundaryPanel.getElement());
+    private final CommandAction createNodeActionAfter = createCommand(new Command() {
+        public void execute() {
+            if (selectedItem != null && selectedItem.getParentItem() != null) {
+                createTemplate(selectedItem.getParentItem(), newStructureName.getText());
+            }
         }
+    }, BUTTON_IMAGES.insertAfter());
+    private final TextBox newStructureName = new TextBox();
+    private final TextBox newTemplateName = new TextBox();
+    private final TemplateDao templateDao = Application.application().templateDao();
 
-        private int boundaryOffsetX;
-
-        private int boundaryOffsetY;
-        private int dropTargetClientHeight;
-
-        private int dropTargetClientWidth;
-        private Widget movablePanel;
-
-        @Override
-        public void dragEnd() {
-            if (1 > 0) return;
-
-
-            movablePanel.removeFromParent();
-            movablePanel = null;
-            super.dragEnd();
-        }
-    };
-
-    private DefaultComboBoxModel<TemplateSelection> templateSelection;
-    private CommandAction createNodeActionInside;
-    private CommandAction createNodeActionAfter;
     private TreeItem selectedItem;
-    private TextBox newStructureName;
-    private TextBox newTemplateName;
+    private DefaultComboBoxModel<TemplateSelection> templateSelection;
+    private TemplateSelection currentSelection = null;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -125,103 +75,15 @@ if (context.dropController != newDropController) {
         super(new BorderLayout());
 
         try {
-            createNodeActionInside = new CommandAction("", new Command() {
-                public void execute() {
-                    //InfoPanel.show("Action", "jipeee");
-
-                    if (selectedItem != null) {
-                        Object o = selectedItem.getUserObject();
-                        if (o instanceof Template) {
-                            Template template = (Template) o;
-
-                            Template nt = Template.create();
-                            nt.setPath(template.getPath());
-                            nt.setName(newStructureName.getText());
-
-                            try {
-                                SaveResult res = Application.DB.save(nt);
-                                System.err.println("saved nt " + nt.getId());
-
-                                Template nt2 = Application.DB.open(res.getId());
-                                JsArrayString pt = nt2.getPath();
-                                pt.set(pt.length(), res.getId());
-
-                                Application.DB.save(nt2);
-                                updateTemplateTree();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
-
-            createNodeActionInside.setEnabled(false);
-            createNodeActionInside.putValue(Action.SHORT_DESCRIPTION, "A short description");
-            createNodeActionInside.putValue(Action.SMALL_ICON, BUTTON_IMAGES.insertInside());
-
-
-            createNodeActionAfter = new CommandAction("", new Command() {
-                public void execute() {
-                    if (selectedItem != null) {
-                        Object o = selectedItem.getUserObject();
-                        if (o instanceof Template) {
-                            Template template = (Template) o;
-
-
-                            Template nt = Template.create();
-                            nt.setName(newStructureName.getText());
-                            nt.setPath(template.getPath());
-
-                            try {
-                                SaveResult res = Application.DB.save(nt);
-                                System.err.println("saved nt " + nt.getId());
-
-                                Template nt2 = Application.DB.open(res.getId());
-                                JsArrayString pt = nt2.getPath();
-                                pt.set(pt.length() - 1, res.getId());
-
-                                Application.DB.save(nt2);
-                                updateTemplateTree();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
-
-            createNodeActionAfter.setEnabled(false);
-            createNodeActionAfter.putValue(Action.SHORT_DESCRIPTION, "A short description");
-            createNodeActionAfter.putValue(Action.SMALL_ICON, BUTTON_IMAGES.insertAfter());
-
-
-            currentTemplateTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
-                public void onSelection(final SelectionEvent<TreeItem> treeItemSelectionEvent) {
-                    final TreeItem selected = treeItemSelectionEvent.getSelectedItem();
-                    System.err.println(selected);
-
-                    if (selected != null) {
-                        createNodeActionAfter.setEnabled(true);
-                        createNodeActionInside.setEnabled(true);
-
-                        selectedItem = selected;
-                    }
-                }
-            });
-
             add(createControlPanel(), new BorderLayoutData(NORTH, true));
-
             add(createToolPanel(), new BorderLayoutData(EAST, true));
-
             add(createTreeTable(), new BorderLayoutData(CENTER));
 
-            updateData();
-
-            if (templateSelection.size() > 0) {
-                templateSelection.setSelectedItem(templateSelection.get(0));
-            }
-
+            updateTemplateList1();
+            //  templateSelection.setSelectedItem(templateSelection.get(0));
+            //   selectItem();
+            final TemplateSelection templateSelection1 = templateSelection.size() > 0 ? templateSelection.get(0) : null;
+            selectItem(templateSelection1);
         } catch (Exception e) {
             Window.alert(e.getMessage());
         }
@@ -246,7 +108,10 @@ if (context.dropController != newDropController) {
 
         templateSelection.addListDataListener(new ListDataListener() {
             public void contentsChanged(ListDataEvent listDataEvent) {
-                updateTemplateTree();
+                TemplateSelection selection = templateSelection.getSelectedItem();
+                if (selection != currentSelection) {
+                    selectItem(selection);
+                }
             }
 
             public void intervalAdded(ListDataEvent listDataEvent) {
@@ -267,37 +132,14 @@ if (context.dropController != newDropController) {
         );
 
 
-        newTemplateName = new TextBox();
         controls.add(newTemplateName, xy(4, 1));
 
         addButton.addClickHandler(new ClickHandler() {
             public void onClick(final ClickEvent clickEvent) {
-                Template template = Template.create();
-                template.setName(newTemplateName.getText());
-                template.setPath("");
                 try {
-
-                    SaveResult res = Application.DB.save(template);
-
-                    Window.alert(newTemplateName.getText());
-                    Template nt2 = Application.DB.open(res.getId());
-                    nt2.getPath().set(0, res.getId());
-
-                    Application.DB.save(nt2);
-
-
-                    updateTemplateTree();
-                    final TemplateSelection item = new TemplateSelection(nt2.getName(), nt2.getId());
-                    // templateSelection.add(item);
-
-                    /*
-                     DeferredCommand.addCommand(new Command() {
-                 public void execute() {
-
-                 }  } );*/
-                    updateData();
-
-                    templateSelection.setSelectedItem(item);
+                    Template template = createTemplate(null, newTemplateName.getText());
+                    updateTemplateList1();
+                    selectItem(template.getId());
                 }
                 catch (Exception e) {
                     System.err.println(e.getMessage());
@@ -308,70 +150,59 @@ if (context.dropController != newDropController) {
 
         controls.add(addButton, xy(6, 1));
 
+        /*
 
-//             controls.getElement().
-        //final Image image = new Image("loading.gif");
-        //image.addMouseListener(new TooltipListener("dsfadsf", 5000));
-        //controls.add(image, xy(5, 1));
-
-        //  dragController.makeDraggable(addButton);
-
-
-        /*     final Element e = templateSelector.getElement();
-           DOM.sinkEvents(e,
-                   Event.ONMOUSEMOVE |
-                           Event.ONMOUSEOUT |
-                           Event.ONMOUSEOVER
-           );
-           DOM.setEventListener(e, new EventListener() {
-               public void onBrowserEvent(final Event event) {
-                   System.err.println(event.toString() + " " + event.getType());
-               }
-           });
+        final Element e = templateSelector.getElement();
+        DOM.sinkEvents(e, Event.ONMOUSEMOVE | Event.ONMOUSEOUT | Event.ONMOUSEOVER);
+        DOM.setEventListener(e, new EventListener() {
+            public void onBrowserEvent(final Event event) {
+                System.err.println(event.toString() + " " + event.getType());
+            }
+        });
         */
-//        Window.alert(controls.getElement().toString());
 
         return controls;
     }
 
-    private void updateTemplateTree() {
-        final TemplateSelection item = templateSelection.getSelectedItem();
+    private Template createTemplate(TreeItem parent, final String name) {
+        try {
+            final List<String> path =
+                    parent == null || !(parent.getUserObject() instanceof Template)
+                            ? new ArrayList<String>()
+                            : ((Template) parent.getUserObject()).getPath();
 
-        if (item != null) {
-            /*DeferredCommand.addCommand(new Command() {
-                public void execute() {
-              */
-            currentTemplateTree.removeItems();
-            //        currentTemplateTree.resize(0, 1);
+            Template nt = Template.create(Application.DB.newUuid(), name, path);
+            Application.DB.save(nt);
 
-            ViewResult<Template> t = Application.DB.view("couch/template", ViewOptions.create(item.getId()));
-            createTree(currentTemplateTree, t.toList(), item.getId(), 0);
+            System.err.println("saved nt " + nt.getId());
 
-            //          }
-            //        });
-
+            if (parent != null) {
+                final TreeItem treeItem = createTreeItem(nt);
+                parent.addItem(treeItem);
+                parent.setState(true);
+                selectTreeItem(treeItem);
+            }
+            return nt;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
-    private void createTree(Tree root, final List<Template> result, String parent, final int dep) {
-        for (final Template template : result) {
-            final JsArrayString pt = template.getPath();
-            if ((pt.length() == (dep + 1) && (dep == 0 || pt.get(dep - 1).equals(parent)))) {
-                final Widget button = new Label(template.getName());
-                dragController.makeDraggable(button);
-                TreeItem it = new TreeItem(button) {
-                    @Override public Object getUserObject() {
-                        return template;
-                    }
+    private TreeItem createTreeItem(final Template template) {
+        final Widget button = new Label(template.getName());
+        return new TreeItem(button) {
+            @Override public Object getUserObject() {
+                return template;
+            }
+        };
+    }
 
-                    /*    @Override public Object getUserObject() {
-                        return template;
-                    }*/
-                };
-
-
-                root.addItem(it);
-                createTree(it, result, template.getId(), dep + 1);
+    private void selectItem(String id) {
+        for (TemplateSelection selection : templateSelection) {
+            if (selection.getId().equals(id)) {
+                selectItem(selection);
+                return;
             }
         }
     }
@@ -407,8 +238,6 @@ if (context.dropController != newDropController) {
         btnActionAfter.setLabelType(ButtonHelper.ButtonLabelType.TEXT_ON_TOP);
         btnActionAfter.bind();
 
-        newStructureName = new TextBox();
-
         lp1.add(new Label("Name"), xyw(1, 1, 5));
         lp1.add(newStructureName, xy(1, 3));
         lp1.add(btnActionInside.getTarget(), xy(3, 3));
@@ -442,44 +271,94 @@ if (context.dropController != newDropController) {
         return lp1;
     }
 
+    // private TreeItem selectedTreeItem;
+
     private ScrollPanel createTreeTable() {
+        currentTemplateTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+            public void onSelection(final SelectionEvent<TreeItem> treeItemSelectionEvent) {
+                selectTreeItem(treeItemSelectionEvent.getSelectedItem());
+            }
+        });
+
         return new ScrollPanel(currentTemplateTree);
     }
 
-    private void updateData() {
+    private void selectTreeItem(TreeItem selected) {
+        if (selectedItem != selected) {
+
+            if (selectedItem != null) selectedItem.removeStyleName("selected");
+
+            selectedItem = selected;
+
+            if (selectedItem != null)
+                selectedItem.addStyleName("selected");
+
+
+            createNodeActionAfter.setEnabled(selected != null);
+            createNodeActionInside.setEnabled(selected != null);
+
+
+        }
+    }
+
+    private void updateTemplateList1() {
         templateSelection.clear();
-        ViewResult<de.atns.abowind.model.Template> vr = Application.DB.view("couch/all_templates");
-        for (ViewResultEntry<Template> templateViewResultEntry : vr.iterator()) {
-            final de.atns.abowind.model.Template template = templateViewResultEntry.getValue();
-            System.err.println("template " + template.getName() + "/" + template.getId());
-            TemplateSelection vt = new TemplateSelection(template.getName(), template.getId());
-            templateSelection.add(vt);
+
+        templateDao.withAllTemplates(new Callback<Template>() {
+            public void handle(Template template) {
+                templateSelection.add(new TemplateSelection(template.getName(), template.getId()));
+            }
+        });
+    }
+
+    private void selectItem(TemplateSelection item) {
+        currentSelection = item;
+        templateSelection.setSelectedItem(item);
+        currentTemplateTree.removeItems();
+
+        if (item != null) {
+            final String id = item.getId();
+            DecoratedTemplate dd = templateDao.loadTemplate(id);
+            dd.dump();
+
+            templateDao.withTemplate(new Callback<List<Template>>() {
+                public void handle(List<Template> template) {
+                    createTree(template, id, 0, new Callback<TreeItem>() {
+                        public void handle(TreeItem template1) {
+                            currentTemplateTree.addItem(template1);
+                        }
+                    });
+                }
+            }, id);
+        }
+    }
+
+    private void createTree(List<Template> result, String parent, int dep, Callback<TreeItem> cb) {
+        for (final Template template : result) {
+            final List<String> pt = template.getPath();
+            if ((pt.size() == (dep + 1) && (dep == 0 || pt.get(dep - 1).equals(parent)))) {
+                final TreeItem it = createTreeItem(template);
+
+                cb.handle(it);
+
+                createTree(result, template.getId(), dep + 1, new Callback<TreeItem>() {
+                    public void handle(TreeItem template) {
+                        it.addItem(template);
+                    }
+                });
+            }
         }
     }
 
 // -------------------------- OTHER METHODS --------------------------
 
-    private void createTree(TreeItem root, final List<Template> result, String parent, final int dep) {
-        for (final Template template : result) {
-            final JsArrayString pt = template.getPath();
-            if ((pt.length() == (dep + 1) && (dep == 0 || pt.get(dep - 1).equals(parent)))) {
-                final Widget button = new Label(template.getName());
-                dragController.makeDraggable(button);
-                TreeItem it = new TreeItem(button) {
-                    @Override public Object getUserObject() {
-                        return template;
-                    }
+    private CommandAction createCommand(Command command, AbstractImagePrototype smallIcon) {
+        CommandAction createNodeActionInside = new CommandAction("", command);
 
-                    /*    @Override public Object getUserObject() {
-                        return template;
-                    }*/
-                };
-
-
-                root.addItem(it);
-                createTree(it, result, template.getId(), dep + 1);
-            }
-        }
+        createNodeActionInside.setEnabled(false);
+        createNodeActionInside.putValue(Action.SHORT_DESCRIPTION, "A short description");
+        createNodeActionInside.putValue(Action.SMALL_ICON, smallIcon);
+        return createNodeActionInside;
     }
 }
 

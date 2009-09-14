@@ -2,7 +2,7 @@ package de.atns.abowind.proto1.action;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
-import de.atns.abowind.proto1.TemplateDesignerPanel;
+import de.atns.abowind.proto1.EquipmentDesignerPanel;
 import de.atns.abowind.proto1.ViewselectionMenuItem;
 import de.atns.abowind.proto1.constants.Menu;
 
@@ -10,7 +10,7 @@ import de.atns.abowind.proto1.constants.Menu;
  * @author mleesch
  * @since 13.08.2009 16:21:45
  */
-public class TemplateEditorAction extends ViewselectionMenuItem {
+public class EquipmentEditorAction extends ViewselectionMenuItem {
 // ------------------------------ FIELDS ------------------------------
 
     private static final Menu c = GWT.create(Menu.class);
@@ -21,20 +21,20 @@ public class TemplateEditorAction extends ViewselectionMenuItem {
 
     public static synchronized ViewselectionMenuItem instance() {
         if (instance == null) {
-            instance = new TemplateEditorAction();
+            instance = new EquipmentEditorAction();
         }
         return instance;
     }
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    public TemplateEditorAction() {
-        super(c.templates());
+    public EquipmentEditorAction() {
+        super(c.equipment());
     }
 
 // -------------------------- OTHER METHODS --------------------------
 
     public Widget createContentPanel() {
-        return new TemplateDesignerPanel();
+        return new EquipmentDesignerPanel();
     }
 }

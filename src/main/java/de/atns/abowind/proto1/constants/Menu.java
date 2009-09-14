@@ -18,6 +18,8 @@ public interface Menu extends Messages {
 
     String current();
 
+    String equipment();
+
     String help();
 
     String inspection();

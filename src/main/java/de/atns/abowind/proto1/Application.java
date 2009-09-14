@@ -1,17 +1,16 @@
 package de.atns.abowind.proto1;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import static com.google.gwt.user.client.DeferredCommand.addCommand;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.JavaScriptObject;
 import de.atns.abowind.proto1.action.InspectionPoolAction;
-import de.atns.abowind.proto1.action.TemplateeditorAction;
+import de.atns.abowind.proto1.action.TemplateEditorAction;
+import de.atns.abowind.proto1.action.EquipmentEditorAction;
 import static de.atns.abowind.proto1.constants.Menu.MENU;
-import de.atns.abowind.model.Template;
+import de.atns.abowind.proto1.event.Registry;
 import org.gwt.mosaic.ui.client.Viewport;
 import org.gwt.mosaic.ui.client.layout.BoxLayout;
 import org.gwt.mosaic.ui.client.layout.BoxLayoutData;
@@ -28,12 +27,17 @@ import org.gwt.mosaic.ui.client.layout.LayoutPanel;
 public class Application extends Viewport {
 // ------------------------------ FIELDS ------------------------------
 
-    private static Application application = null;
-
-    private final LayoutPanel contentPanel = new LayoutPanel(new FillLayout());
     public static final CouchDB DB = CouchDB.create("abowind");
+    private static Application application = null;
+    private final Registry registry = new Registry();
+    private final LayoutPanel contentPanel = new LayoutPanel(new FillLayout());
+    private final TemplateDao templateDao = new TemplateDao();
 
 // -------------------------- STATIC METHODS --------------------------
+
+    public static Registry registry() {
+        return application.registry;
+    }
 
     public static synchronized Application application() {
         if (application == null) {
@@ -61,7 +65,8 @@ public class Application extends Viewport {
         ));
 
         menuBar.addItem(MENU.administration(), menu(
-                TemplateeditorAction.instance()
+                TemplateEditorAction.instance() ,
+                EquipmentEditorAction.instance()
         ));
 
         menuBar.addItem(MENU.statistics(), menu(
@@ -97,5 +102,9 @@ public class Application extends Viewport {
                 layout();
             }
         });
+    }
+
+    public TemplateDao templateDao() {
+        return templateDao;
     }
 }

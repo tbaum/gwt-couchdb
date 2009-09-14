@@ -10,40 +10,24 @@ import java.util.List;
  * @author tbaum
  * @since 06.08.2009 14:11:03
  */
-public class Template extends JavaScriptObject {
+public class Equipment extends JavaScriptObject {
 // -------------------------- STATIC METHODS --------------------------
 
-    public static native Template create(String id) /*-{
-        return {_id:id, type:"template"};
+    public static native Equipment create(String id) /*-{
+        return {_id:id, type:"equipment"};
     }-*/;
 
-    public static Template create(final String id, String name, List<String> path) throws Exception {
-        Template nt = create(id);
-        List<String> p = new ArrayList<String>(path);
-        p.add(nt.getId());
-        nt.setPath(p);
-
+    public static Equipment create(final String id, String name) throws Exception {
+        Equipment nt = create(id);
         nt.setName(name);
         return nt;
     }
-
-    public final native String getId() /*-{ return this._id; }-*/;
-
-    public final void setPath(List<String> p) {
-        JsArrayString a = JavaScriptObject.createArray().cast();
-        for (int i = 0, pLength = p.size(); i < pLength; i++) {
-            a.set(i, p.get(i));
-        }
-        setPath_(a);
-    }
-
-    public final native void setPath_(JsArrayString path)        /*-{ this.path=path; }-*/;
 
     public final native void setName(String name) /*-{ this.name=name; }-*/;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    protected Template() {
+    protected Equipment() {
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -52,15 +36,15 @@ public class Template extends JavaScriptObject {
         return "Template{" +
                 "id='" + getId() + '\'' +
                 ", name='" + getName() + '\'' +
-                ", path=" + getPath() +
+                ", templates=" + getTemplates() +
                 ", rev='" + getRev() + '\'' +
                 '}';
     }
 
     public final native String getRev() /*-{ return this._rev; }-*/;
 
-    public final List<String> getPath() {
-        JsArrayString pt = getPath_();
+    public final List<String> getTemplates() {
+        JsArrayString pt = getTemplates_();
         final int len = pt.length();
         List<String> rs = new ArrayList<String>(len);
         for (int i = 0; i < len; i++) {
@@ -69,7 +53,19 @@ public class Template extends JavaScriptObject {
         return rs;
     }
 
-    public final native JsArrayString getPath_() /*-{ return this.path; }-*/;
+    public final native JsArrayString getTemplates_() /*-{ return this.templates; }-*/;
 
     public final native String getName() /*-{ return this.name; }-*/;
+
+    public final native String getId() /*-{ return this._id; }-*/;
+
+    public final void setTemplates(List<String> p) {
+        JsArrayString a = JavaScriptObject.createArray().cast();
+        for (int i = 0, pLength = p.size(); i < pLength; i++) {
+            a.set(i, p.get(i));
+        }
+        setTemplates_(a);
+    }
+
+    public final native void setTemplates_(JsArrayString templates)        /*-{ this.templates=templates; }-*/;
 }

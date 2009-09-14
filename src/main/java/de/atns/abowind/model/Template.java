@@ -43,6 +43,10 @@ public class Template extends JavaScriptObject {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
+    public final native void setStatusGroup( String id ) /*-{ this.statusGroup=id; }-*/;
+    public final native String getStatusGroup() /*-{ return statusGroup; }-*/;
+
+
     protected Template() {
     }
 

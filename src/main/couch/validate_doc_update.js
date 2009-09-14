@@ -11,8 +11,8 @@ function(newDoc, oldDoc, userCtx) {
         //    require("name", "path");
     } else
 
-    if (newDoc.type == "question") {
-        require("name", "answers");
+    if (newDoc.type == "statusgroup") {
+        require("name", "options");
     }
     else  if (newDoc.type == "equipment") {
         require("name", "templates");

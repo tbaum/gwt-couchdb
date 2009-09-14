@@ -18,4 +18,6 @@ public interface ButtonImages extends ImageBundle {
     AbstractImagePrototype addTemplate();
     AbstractImagePrototype insertInside();
     AbstractImagePrototype insertAfter();
+    AbstractImagePrototype statusEdit();
+    AbstractImagePrototype plugin_add();
 }

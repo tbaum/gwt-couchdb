@@ -7,11 +7,9 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import de.atns.abowind.model.Template;
-import de.atns.abowind.model.TemplateSelection;
+import de.atns.abowind.model.*;
 import static de.atns.abowind.proto1.constants.ButtonImages.BUTTON_IMAGES;
 import de.atns.abowind.proto1.constants.Menu;
-import static de.atns.abowind.proto1.constants.TemplateEditor.ACTION;
 import de.atns.abowind.proto1.model.DecoratedTemplate;
 import org.gwt.mosaic.actions.client.Action;
 import org.gwt.mosaic.actions.client.ButtonBindings;
@@ -20,9 +18,7 @@ import static org.gwt.mosaic.forms.client.layout.CellConstraints.xy;
 import static org.gwt.mosaic.forms.client.layout.CellConstraints.xyw;
 import org.gwt.mosaic.forms.client.layout.FormLayout;
 import org.gwt.mosaic.ui.client.ComboBox;
-import org.gwt.mosaic.ui.client.InfoPanel;
 import org.gwt.mosaic.ui.client.ListBox;
-import org.gwt.mosaic.ui.client.StackLayoutPanel;
 import org.gwt.mosaic.ui.client.layout.BorderLayout;
 import static org.gwt.mosaic.ui.client.layout.BorderLayout.Region.*;
 import org.gwt.mosaic.ui.client.layout.BorderLayoutData;
@@ -48,26 +44,42 @@ public class TemplateDesignerPanel extends LayoutPanel {
 
     private final CommandAction createNodeActionInside = createCommand(new Command() {
         public void execute() {
-            if (selectedItem != null) {
-                createTemplate(selectedItem, newStructureName.getText());
+            if (selectedTemplateItem != null) {
+                createTemplate(selectedTemplateItem, newStructureName.getText());
             }
         }
     }, BUTTON_IMAGES.insertInside());
 
-    private final CommandAction createNodeActionAfter = createCommand(new Command() {
+    private final CommandAction createStatusEditAction = createCommand(new Command() {
         public void execute() {
-            if (selectedItem != null && selectedItem.getParentItem() != null) {
-                createTemplate(selectedItem.getParentItem(), newStructureName.getText());
+            if (selectedTemplateItem != null) {
+                System.err.println("Blablubb");
+                TemplateStatusEdit test = new TemplateStatusEdit();
+                test.showModal();
             }
         }
-    }, BUTTON_IMAGES.insertAfter());
+    }, BUTTON_IMAGES.statusEdit());
+
+    private final CommandAction createStatusAction = createCommand(new Command() {
+        public void execute() {
+            if (selectedTemplateItem != null) {
+                createStatus(selectedTemplateItem, newStatusName.getText());
+            }
+        }
+    }, BUTTON_IMAGES.plugin_add());
+
+
     private final TextBox newStructureName = new TextBox();
+    private final TextBox newStatusName = new TextBox();
     private final TextBox newTemplateName = new TextBox();
     private final TemplateDao templateDao = Application.application().templateDao();
 
-    private TreeItem selectedItem;
+    private TreeItem selectedTemplateItem;
+    private TreeItem selectedStatusGroupItem;
     private DefaultComboBoxModel<TemplateSelection> templateSelection;
-    private TemplateSelection currentSelection = null;
+    private DefaultComboBoxModel<StatusGroupSelection> statusGroupSelection;
+    private TemplateSelection currentTemplateSelection = null;
+    private StatusGroupSelection currentStatusGroupSelection = null;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -92,34 +104,8 @@ public class TemplateDesignerPanel extends LayoutPanel {
     private Widget createControlPanel() {
         //    scrollTreeTable.setResizePolicy(UNCONSTRAINED);
 
-        final ComboBox<TemplateSelection> templateSelector = new ComboBox<TemplateSelection>();
-        templateSelection = (DefaultComboBoxModel<TemplateSelection>) templateSelector.getModel();
-
-        templateSelector.setCellRenderer(new ComboBox.ComboBoxCellRenderer<TemplateSelection>() {
-            public String getDisplayText(TemplateSelection templateSelection) {
-                return templateSelection.getName();
-            }
-
-            public void renderCell(ListBox<TemplateSelection> templateSelectionListBox, int i, int i1, TemplateSelection templateSelection) {
-                templateSelectionListBox.setText(i, i1, templateSelection.getName());
-            }
-        });
-
-
-        templateSelection.addListDataListener(new ListDataListener() {
-            public void contentsChanged(ListDataEvent listDataEvent) {
-                TemplateSelection selection = templateSelection.getSelectedItem();
-                if (selection != currentSelection) {
-                    selectItem(selection);
-                }
-            }
-
-            public void intervalAdded(ListDataEvent listDataEvent) {
-            }
-
-            public void intervalRemoved(ListDataEvent listDataEvent) {
-            }
-        });
+        final ComboBox<TemplateSelection> templateSelector = createTemplateSelector();
+        final ComboBox<StatusGroupSelection> statusGroupSelection = createStatusGroupSelector();
 
         LayoutPanel controls = new LayoutPanel(new FormLayout("130px, p,3dlu, right:pref:grow,3dlu,p, 3dlu", "p"));
         controls.add(new Label("Choose Template"), xy(1, 1));
@@ -164,6 +150,85 @@ public class TemplateDesignerPanel extends LayoutPanel {
         return controls;
     }
 
+    private ComboBox<StatusGroupSelection> createStatusGroupSelector() {
+        final ComboBox<StatusGroupSelection> statusGroupSelector = new ComboBox<StatusGroupSelection>();
+        statusGroupSelection = (DefaultComboBoxModel<StatusGroupSelection>) statusGroupSelector.getModel();
+
+        statusGroupSelector.setCellRenderer(new ComboBox.ComboBoxCellRenderer<StatusGroupSelection>() {
+            public String getDisplayText(StatusGroupSelection statusGroupSelection) {
+                return statusGroupSelection.getName();
+            }
+
+            public void renderCell(ListBox<StatusGroupSelection> statusGroupSelectionListBox, int i, int i1, StatusGroupSelection statusGroupSelection) {
+                statusGroupSelectionListBox.setText(i, i1, statusGroupSelection.getName());
+            }
+        });
+
+
+        templateSelection.addListDataListener(new ListDataListener() {
+            public void contentsChanged(ListDataEvent listDataEvent) {
+                StatusGroupSelection selection = statusGroupSelection.getSelectedItem();
+                if (selection != currentStatusGroupSelection) {
+                    //selectItem(selection);
+                }
+            }
+
+            public void intervalAdded(ListDataEvent listDataEvent) {
+            }
+
+            public void intervalRemoved(ListDataEvent listDataEvent) {
+            }
+        });
+
+        return statusGroupSelector;
+    }
+
+    private void updateStatusGroupSelector() {
+        statusGroupSelection.clear();
+
+        ViewResult<StatusGroup> t = Application.DB.view("couch/statusgroup_all");
+        List<StatusGroup> statusGroups = t.toList();
+
+        for (StatusGroup statusGroup : statusGroups) {
+            StatusGroupSelection sgs = new StatusGroupSelection(statusGroup.getName(), statusGroup.getId(), statusGroup.getStatusOptions() );
+            
+            statusGroupSelection.add(sgs);
+        }
+       
+    }
+
+    private ComboBox<TemplateSelection> createTemplateSelector() {
+        final ComboBox<TemplateSelection> templateSelector = new ComboBox<TemplateSelection>();
+        templateSelection = (DefaultComboBoxModel<TemplateSelection>) templateSelector.getModel();
+
+        templateSelector.setCellRenderer(new ComboBox.ComboBoxCellRenderer<TemplateSelection>() {
+            public String getDisplayText(TemplateSelection templateSelection) {
+                return templateSelection.getName();
+            }
+
+            public void renderCell(ListBox<TemplateSelection> templateSelectionListBox, int i, int i1, TemplateSelection templateSelection) {
+                templateSelectionListBox.setText(i, i1, templateSelection.getName());
+            }
+        });
+
+
+        templateSelection.addListDataListener(new ListDataListener() {
+            public void contentsChanged(ListDataEvent listDataEvent) {
+                TemplateSelection selection = templateSelection.getSelectedItem();
+                if (selection != currentTemplateSelection) {
+                    selectItem(selection);
+                }
+            }
+
+            public void intervalAdded(ListDataEvent listDataEvent) {
+            }
+
+            public void intervalRemoved(ListDataEvent listDataEvent) {
+            }
+        });
+        return templateSelector;
+    }
+
     private Template createTemplate(TreeItem parent, final String name) {
         try {
             final List<String> path =
@@ -186,6 +251,7 @@ public class TemplateDesignerPanel extends LayoutPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -198,6 +264,23 @@ public class TemplateDesignerPanel extends LayoutPanel {
         };
     }
 
+    private void selectTreeItem(TreeItem selected) {
+        if (selectedTemplateItem != selected) {
+            if (selectedTemplateItem != null) selectedTemplateItem.removeStyleName("selected");
+
+            selectedTemplateItem = selected;
+
+            if (selectedTemplateItem != null)
+                selectedTemplateItem.addStyleName("selected");
+
+            updateStatusGroupSelector();
+
+            createStatusEditAction.setEnabled(selected != null);
+            createStatusAction.setEnabled(selected != null);
+            createNodeActionInside.setEnabled(selected != null);
+        }
+    }
+
     private void selectItem(String id) {
         for (TemplateSelection selection : templateSelection) {
             if (selection.getId().equals(id)) {
@@ -208,67 +291,50 @@ public class TemplateDesignerPanel extends LayoutPanel {
     }
 
     private Widget createToolPanel() {
-        StackLayoutPanel stackPanel = new StackLayoutPanel();
-        stackPanel.setWidth("200px");
-
+        LayoutPanel layoutPanel = new LayoutPanel();
+        layoutPanel.setWidth("200px");
 
         //lp1.setHeight("40px");
-
-
-        //      DropController dropController = new AbsolutePositionDropController(lp1);
-//        dragController.registerDropController(dropController);
+        //DropController dropController = new AbsolutePositionDropController(lp1);
+        //dragController.registerDropController(dropController);
         // dragController.makeDraggable(scrollTreeTable);
-        stackPanel.add(createStructureToolPanel(), ACTION.structure());
-        stackPanel.add(createQuestionToplPanel(), ACTION.question());
 
-        stackPanel.showStack(0);
-
-        return stackPanel;
+        layoutPanel.add(createStructureToolPanel());
+        return layoutPanel;
     }
 
     private LayoutPanel createStructureToolPanel() {
-        LayoutPanel lp1 = new LayoutPanel(new FormLayout("p:grow, 5px, 32px, 5px, 32px", "p, 5px, p"));
+        LayoutPanel lp1 = new LayoutPanel(new FormLayout("p:grow, 5px, 32px", "p, 10px, p, 20px, pref, 5px, p, 15px, p, 5px, p"));
 
 
-        final ButtonBindings btnActionInside = new ButtonBindings(createNodeActionInside);
-        btnActionInside.setLabelType(ButtonHelper.ButtonLabelType.TEXT_ON_TOP);
-        btnActionInside.bind();
+        final ButtonBindings btnActionInside = bindButton(createNodeActionInside);
+        final ButtonBindings btnActionStatusEdit = bindButton(createStatusEditAction);
+        final ButtonBindings btnActionStatus = bindButton(createStatusAction);
 
-        final ButtonBindings btnActionAfter = new ButtonBindings(createNodeActionAfter);
-        btnActionAfter.setLabelType(ButtonHelper.ButtonLabelType.TEXT_ON_TOP);
-        btnActionAfter.bind();
 
-        lp1.add(new Label("Name"), xyw(1, 1, 5));
+        lp1.add(new Label("Create new templatecategory"), xy(1, 1));
         lp1.add(newStructureName, xy(1, 3));
         lp1.add(btnActionInside.getTarget(), xy(3, 3));
-        lp1.add(btnActionAfter.getTarget(), xy(5, 3));
+
+        lp1.add(new Label("Choose status"), xy(1, 5));
+        lp1.add(new Label("Create new status"), xy(1, 9));
+
+        lp1.add(new ComboBox(), xy(1, 7));
+        lp1.add(btnActionStatusEdit.getTarget(), xy(3, 7));
+
+        lp1.add(newStatusName, xy(1, 11));
+        lp1.add(btnActionStatus.getTarget(), xy(3, 11));
+
+
         lp1.layout();
         return lp1;
     }
 
-    private LayoutPanel createQuestionToplPanel() {
-        LayoutPanel lp1 = new LayoutPanel(new FormLayout("p", "p,3dlu,p"));
-        lp1.add(new TextBox(), xy(1, 3));
-
-        final CommandAction createNodeAction = new CommandAction("Hello!", new Command() {
-            public void execute() {
-                InfoPanel.show("Action", "jipeee");
-            }
-        });
-
-        createNodeAction.setEnabled(false);
-        createNodeAction.putValue(Action.SHORT_DESCRIPTION, "A short description");
-        createNodeAction.putValue(Action.SMALL_ICON, CommandAction.ACTION_IMAGES.bell());
-
-
-        final ButtonBindings btnActionSupport4 = new ButtonBindings(createNodeAction);
-        btnActionSupport4.setLabelType(ButtonHelper.ButtonLabelType.TEXT_ON_TOP);
-        btnActionSupport4.bind();
-
-
-        lp1.add(btnActionSupport4.getTarget(), xy(1, 1));
-        lp1.layout();
-        return lp1;
+    private ButtonBindings bindButton(final CommandAction commandAction) {
+        ButtonBindings bb = new ButtonBindings(commandAction);
+        bb.setLabelType(ButtonHelper.ButtonLabelType.TEXT_ON_TOP);
+        bb.bind();
+        return bb;
     }
 
     // private TreeItem selectedTreeItem;
@@ -283,24 +349,6 @@ public class TemplateDesignerPanel extends LayoutPanel {
         return new ScrollPanel(currentTemplateTree);
     }
 
-    private void selectTreeItem(TreeItem selected) {
-        if (selectedItem != selected) {
-
-            if (selectedItem != null) selectedItem.removeStyleName("selected");
-
-            selectedItem = selected;
-
-            if (selectedItem != null)
-                selectedItem.addStyleName("selected");
-
-
-            createNodeActionAfter.setEnabled(selected != null);
-            createNodeActionInside.setEnabled(selected != null);
-
-
-        }
-    }
-
     private void updateTemplateList1() {
         templateSelection.clear();
 
@@ -312,7 +360,7 @@ public class TemplateDesignerPanel extends LayoutPanel {
     }
 
     private void selectItem(TemplateSelection item) {
-        currentSelection = item;
+        currentTemplateSelection = item;
         templateSelection.setSelectedItem(item);
         currentTemplateTree.removeItems();
 
@@ -332,6 +380,8 @@ public class TemplateDesignerPanel extends LayoutPanel {
             }, id);
         }
     }
+
+
 
     private void createTree(List<Template> result, String parent, int dep, Callback<TreeItem> cb) {
         for (final Template template : result) {
@@ -359,6 +409,26 @@ public class TemplateDesignerPanel extends LayoutPanel {
         createNodeActionInside.putValue(Action.SHORT_DESCRIPTION, "A short description");
         createNodeActionInside.putValue(Action.SMALL_ICON, smallIcon);
         return createNodeActionInside;
+    }
+
+
+    private void createStatus(final TreeItem selectedItem, final String text) {
+        try {
+
+
+            StatusGroup nt = StatusGroup.create(Application.DB.newUuid(), text);
+            Application.DB.save(nt);
+
+            System.err.println("saved StatusGroup " + nt.getId());
+
+            if (selectedItem != null) {
+                Template template = (Template) selectedItem.getUserObject();
+                template.setStatusGroup(nt.getId());
+                Application.DB.save(template);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

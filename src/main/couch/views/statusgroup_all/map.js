@@ -1,5 +1,5 @@
 function (doc) {
-    if (doc.type == 'question') {
+    if (doc.type == 'statusgroup') {
         emit(doc._id, doc);
     }
 }

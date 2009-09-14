@@ -57,7 +57,7 @@ public class InspectionPanel extends LayoutPanel {
         // Level 1 headers
         FlexTable.FlexCellFormatter headerFormatter = headerTable.getFlexCellFormatter();
         headerTable.setHTML(0, 0, "Anlage XYZ");
-        headerTable.setHTML(0, 1, "Status");
+        headerTable.setHTML(0, 1, "StatusGroup");
 
         headerFormatter.setColSpan(0, 1, 3);
         //     headerTable.setColumnWidth(1, 20);

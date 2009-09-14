@@ -4,7 +4,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 import static de.atns.abowind.proto1.Application.application;
 import de.atns.abowind.proto1.action.TemplateEditorAction;
-import de.atns.abowind.proto1.action.EquipmentEditorAction;
 import org.gwt.beansbinding.core.client.util.GWTBeansBinding;
 
 
@@ -21,7 +20,10 @@ public class Proto1 implements EntryPoint {
         //   InspectionPoolAction.instance().execute();
         RootPanel.get("splash").setVisible(false);
 
-        EquipmentEditorAction.instance().execute();
+        //  EquipmentEditorAction.instance().execute();
+     //   TemplateEditorAction.instance().execute();
+        //  InspectionPoolAction.instance().execute();
+
         //  InspectionPanel w = new InspectionPanel();
         //    w.showModal();
         //  Application.application().setContent(w);

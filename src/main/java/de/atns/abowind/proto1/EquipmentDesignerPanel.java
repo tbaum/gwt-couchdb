@@ -43,6 +43,7 @@ public class EquipmentDesignerPanel extends LayoutPanel {
     private DefaultComboBoxModel<TemplateSelection> templateSelection;
     private TemplateSelection currentSelection = null;
     private Label widget = new Label("todo");
+    private TextArea dbg = new TextArea();
 
     private final Set<String> sect = new HashSet<String>();
 
@@ -126,16 +127,17 @@ public class EquipmentDesignerPanel extends LayoutPanel {
                 return p2.compareTo(p1);
             }
         });
-        System.err.println("---- result ----");
+        String s = "";
+        List<String> last = null;
         for (TemplateDec ttx : tt) {
-            System.err.println(ttx.getPathName());
+            if (ttx.getPathName().equals(last)) continue;
+            last = ttx.getPathName();
+            s += ttx.getPathName() + "\n";
         }
+        dbg.setText(s);
         //   System.err.println(templ);
     }
 
-    public static void main(String[] args) {
-
-    }
 
     // private TreeItem selectedTreeItem;
 
@@ -268,12 +270,14 @@ public class EquipmentDesignerPanel extends LayoutPanel {
 
         createTargetTree();
         widget.setText(sect.toString());
+
     }
 
     private LayoutPanel createEqTable() {
         LayoutPanel l = new LayoutPanel(new BoxLayout(BoxLayout.Orientation.VERTICAL));
         l.add(widget, new BoxLayoutData(BoxLayoutData.FillStyle.HORIZONTAL));
-        l.add(new ScrollPanel(currentEqTree), new BoxLayoutData(BoxLayoutData.FillStyle.BOTH));
+        l.add(dbg, new BoxLayoutData(BoxLayoutData.FillStyle.BOTH));
+      //  l.add(new ScrollPanel(currentEqTree), new BoxLayoutData(BoxLayoutData.FillStyle.BOTH));
         return l;
     }
 
@@ -367,7 +371,7 @@ public class EquipmentDesignerPanel extends LayoutPanel {
                 final Template t = id2temp.get(s);
                 pn.add(t != null ? t.getName() : "undefined");
             }
-
+            pn.set(0, "__NEW_STRUCT__");
             pathName = Collections.unmodifiableList(pn);
         }
     }

@@ -6,6 +6,10 @@
     background-color: lightblue;
 }
 
+.history {
+    background-color: #dddddd;
+}
+
 /*
 body {
     background-color: white;
@@ -75,7 +79,7 @@ body {
 .comment {
 
 }
-
+    */
 #splash {
     position: absolute;
     top: 0;
@@ -85,7 +89,7 @@ body {
 }
 
 #splash_loading {
-    background-image: url("'blank_splash.gif'");
+    background-image: url("blank_splash.gif");
     height: 34px;
     width: 82px;
     padding: 66px 0 0 68px;
@@ -95,4 +99,8 @@ body {
     font-weight: bold;
     color: #777;
     cursor: wait;
-} */
+}
+
+.debug {
+    background: #eeeeee;
+}

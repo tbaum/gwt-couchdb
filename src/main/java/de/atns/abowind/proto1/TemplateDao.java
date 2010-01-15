@@ -1,6 +1,9 @@
 package de.atns.abowind.proto1;
 
-import de.atns.abowind.proto1.model.*;
+import de.atns.abowind.proto1.model.Equipment;
+import de.atns.abowind.proto1.model.Template;
+import de.atns.abowind.proto1.model.ViewResult;
+import de.atns.abowind.proto1.model.ViewResultEntry;
 import de.atns.abowind.proto1.model.DecoratedTemplate;
 
 import java.util.List;

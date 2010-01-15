@@ -8,7 +8,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import de.atns.abowind.proto1.model.*;
-import de.atns.abowind.proto1.model.DecoratedTemplate;
 import org.gwt.mosaic.actions.client.Action;
 import org.gwt.mosaic.actions.client.ButtonBindings;
 import org.gwt.mosaic.actions.client.CommandAction;

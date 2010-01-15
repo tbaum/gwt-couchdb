@@ -3,6 +3,7 @@
 <module>
     <inherits name='com.google.gwt.core.Core'/>
     <inherits name="org.gwt.mosaic.ui.UI"/>
+    <inherits name="com.google.gwt.core.CompilerParameters"/>
 
     <source path="model"/>
 

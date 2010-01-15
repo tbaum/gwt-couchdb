@@ -5,7 +5,7 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-
+    
     <servlet>
         <servlet-name>proxy</servlet-name>
         <servlet-class>de.atns.common.ProxyServlet</servlet-class>
@@ -23,15 +23,6 @@
         <url-pattern>/_uuids</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>remoteLoggingService</servlet-name>
-        <servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>remoteLoggingService</servlet-name>
-        <url-pattern>/de.atns.abowind.Proto1/logging</url-pattern>
-    </servlet-mapping>
- 
 
 
 </web-app>

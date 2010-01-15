@@ -9,7 +9,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gwtVersion>1.6.4</gwtVersion>
+        <gwtVersion>1.7.0</gwtVersion>
     </properties>
     <build>
 
@@ -67,34 +67,70 @@
             <version>${gwtVersion}</version>
             <scope>provided</scope>
         </dependency>
+        <!--
 
-        <dependency>
-            <groupId>com.google.code.gwt-dnd</groupId>
-            <artifactId>gwt-dnd</artifactId>
-            <version>2.5.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gwtx</groupId>
-            <artifactId>gwtx</artifactId>
-            <version>1.5.3</version>
-        </dependency>
+atns.ext:gwt-mosaic:0.3.0-rc1
+           atns.ext:gwt-beans-binding:0.2.4
+                       atns.ext:gwt-dnd:2.6.5
+                    atns.ext:gwtx:1.5.2   
+        -->
+
 
         <dependency>
             <groupId>atns.ext</groupId>
             <artifactId>gwt-mosaic</artifactId>
-            <version>0.2.2-1023</version>
+            <version>0.3.0-rc1</version>
         </dependency>
-        <dependency>
-            <groupId>atns.ext</groupId>
-            <artifactId>gwt-incubator</artifactId>
-            <version>1.6_1684</version>
-        </dependency>
-
         <dependency>
             <groupId>atns.ext</groupId>
             <artifactId>gwt-beans-binding</artifactId>
             <version>0.2.4</version>
         </dependency>
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwt-dnd</artifactId>
+            <version>2.6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwtx</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>atns.ext</groupId>
+            <artifactId>gwt-incubator-trunk</artifactId>
+            <version>0.0.-r1684</version>
+        </dependency>
+
+
+        <!--
+   <dependency>
+       <groupId>com.google.code.gwt-dnd</groupId>
+       <artifactId>gwt-dnd</artifactId>
+       <version>2.5.6</version>
+   </dependency>
+   <dependency>
+       <groupId>com.google.code.gwtx</groupId>
+       <artifactId>gwtx</artifactId>
+       <version>1.5.3</version>
+   </dependency>
+
+   <dependency>
+       <groupId>atns.ext</groupId>
+       <artifactId>gwt-mosaic</artifactId>
+       <version>0.2.2-1023</version>
+   </dependency>
+   <dependency>
+       <groupId>atns.ext</groupId>
+       <artifactId>gwt-incubator</artifactId>
+       <version>1.6_1684</version>
+   </dependency>
+
+   <dependency>
+       <groupId>atns.ext</groupId>
+       <artifactId>gwt-beans-binding</artifactId>
+       <version>0.2.4</version>
+   </dependency>     -->
     </dependencies>
 
     <repositories>

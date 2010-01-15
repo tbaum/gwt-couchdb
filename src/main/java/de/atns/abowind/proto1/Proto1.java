@@ -16,7 +16,8 @@ public class Proto1 implements EntryPoint {
 // --------------------- Interface EntryPoint ---------------------
 
     public void onModuleLoad() {
-        application().attach();
+       application();
+        //application().attach();
         //   InspectionPoolAction.instance().execute();
         RootPanel.get("splash").setVisible(false);
 

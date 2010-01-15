@@ -5,7 +5,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import de.atns.abowind.model.Equipment;
 import de.atns.abowind.model.Template;
 import de.atns.abowind.model.TemplateSelection;
 import org.gwt.mosaic.actions.client.Action;
@@ -61,15 +60,16 @@ public class EquipmentDesignerPanel extends LayoutPanel {
 
 
             updateTemplateList1();
-            final String id = "eb4cc63c04cc88f3ea3b687883a2f85f";
+            /*   final String id = "eb4cc63c04cc88f3ea3b687883a2f85f";
 
-            templateDao.withEquipment(id, new Callback<Equipment>() {
-                public void handle(Equipment equipment) {
-                    sect.clear();
-                    sect.addAll(equipment.getTemplates());
-                    //     final Map<String, String> id2name = new HashMap<String, String>();
-                }
-            });
+           templateDao.withEquipment(id, new Callback<Equipment>() {
+               public void handle(Equipment equipment) {
+                   sect.clear();
+                   sect.addAll(equipment.getTemplates());
+                   //     final Map<String, String> id2name = new HashMap<String, String>();
+               }
+           }); */
+
             createTargetTree();
 
 /*            addCommand(new Command() {
@@ -122,20 +122,37 @@ public class EquipmentDesignerPanel extends LayoutPanel {
 
         Collections.sort(tt, new Comparator<TemplateDec>() {
             public int compare(TemplateDec o1, TemplateDec o2) {
-                String p1 = o1.getPathName().toString();
-                String p2 = o2.getPathName().toString();
-                return p2.compareTo(p1);
+                String p1 = mkp(o1.getPathName());
+                String p2 = mkp(o2.getPathName());
+                return p1.compareTo(p2);
             }
         });
         String s = "";
         List<String> last = null;
         for (TemplateDec ttx : tt) {
-            if (ttx.getPathName().equals(last)) continue;
-            last = ttx.getPathName();
-            s += ttx.getPathName() + "\n";
+            final List<String> sL = ttx.getPathName();
+            if (sL.equals(last)) continue;
+            last = sL;
+            String sep = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t".substring(0, sL.size());
+            //  for (String s1 : sL) {
+            //      s += sep + s1;
+            //      sep = " > ";
+            //  }
+            s += sep + sL.get(sL.size() - 1);
+
+            s += "\n";
         }
         dbg.setText(s);
         //   System.err.println(templ);
+    }
+
+    private String mkp(List<String> pathName) {
+        String r = "";
+        for (String s : pathName) {
+            r += (r.length() > 0 ? " : " : "") + s;
+        }
+        return r;
+
     }
 
 
@@ -277,7 +294,7 @@ public class EquipmentDesignerPanel extends LayoutPanel {
         LayoutPanel l = new LayoutPanel(new BoxLayout(BoxLayout.Orientation.VERTICAL));
         l.add(widget, new BoxLayoutData(BoxLayoutData.FillStyle.HORIZONTAL));
         l.add(dbg, new BoxLayoutData(BoxLayoutData.FillStyle.BOTH));
-      //  l.add(new ScrollPanel(currentEqTree), new BoxLayoutData(BoxLayoutData.FillStyle.BOTH));
+        //  l.add(new ScrollPanel(currentEqTree), new BoxLayoutData(BoxLayoutData.FillStyle.BOTH));
         return l;
     }
 

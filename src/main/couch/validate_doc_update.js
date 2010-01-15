@@ -9,15 +9,14 @@ function(newDoc, oldDoc, userCtx) {
 
     if (newDoc.type == "user") {
         //    require("name", "path");
-    } else
-
-    if (newDoc.type == "statusgroup") {
+    }
+    else if (newDoc.type == "statusgroup") {
         require("name", "options");
     }
-    else  if (newDoc.type == "equipment") {
+    else if (newDoc.type == "equipment") {
         require("name", "templates");
     }
-    else  if (newDoc.type == "template") {
+    else if (newDoc.type == "template") {
         require("name", "path");
     }
     else {

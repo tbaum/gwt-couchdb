@@ -1,19 +1,15 @@
-package de.atns.abowind.proto1.action;
+package de.atns.abowind.proto1;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
-import de.atns.abowind.proto1.InspectionPanel;
+import de.atns.abowind.proto1.TemplateDesignerPanel;
 import de.atns.abowind.proto1.ViewselectionMenuItem;
-import de.atns.abowind.proto1.constants.Menu;
 
 /**
- * @author tbaum
- * @since 20.08.2009 16:21:45
+ * @author mleesch
+ * @since 13.08.2009 16:21:45
  */
-public class InspectionAction extends ViewselectionMenuItem {
+public class TemplateEditorAction extends ViewselectionMenuItem {
 // ------------------------------ FIELDS ------------------------------
-
-    private static final Menu c = GWT.create(Menu.class);
 
     private static ViewselectionMenuItem instance = null;
 
@@ -21,20 +17,20 @@ public class InspectionAction extends ViewselectionMenuItem {
 
     public static synchronized ViewselectionMenuItem instance() {
         if (instance == null) {
-            instance = new InspectionAction();
+            instance = new TemplateEditorAction();
         }
         return instance;
     }
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
-    private InspectionAction() {
-        super(c.inspection());
+    public TemplateEditorAction() {
+        super("Templates");
     }
 
 // -------------------------- OTHER METHODS --------------------------
 
     public Widget createContentPanel() {
-        return new InspectionPanel();
+        return new TemplateDesignerPanel();
     }
 }

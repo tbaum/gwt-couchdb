@@ -6,23 +6,21 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
-import static com.google.gwt.user.client.DeferredCommand.addCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import de.atns.abowind.proto1.action.EquipmentEditorAction;
-import de.atns.abowind.proto1.action.InspectionPoolAction;
-import de.atns.abowind.proto1.action.TemplateEditorAction;
-import static de.atns.abowind.proto1.constants.Menu.MENU;
-import de.atns.abowind.proto1.event.Registry;
+import de.atns.abowind.proto1.EquipmentEditorAction;
+import de.atns.abowind.proto1.TemplateEditorAction;
 import org.gwt.mosaic.ui.client.layout.BoxLayout;
 import org.gwt.mosaic.ui.client.layout.BoxLayoutData;
-import static org.gwt.mosaic.ui.client.layout.BoxLayoutData.FillStyle.BOTH;
 import org.gwt.mosaic.ui.client.layout.FillLayout;
 import org.gwt.mosaic.ui.client.layout.LayoutPanel;
 
+import static com.google.gwt.user.client.DeferredCommand.addCommand;
+import static org.gwt.mosaic.ui.client.layout.BoxLayoutData.FillStyle.BOTH;
+
 
 /**
- * @author mleesch
+ * @author tbaum
  * @since 13.08.2009 15:36:32
  */
 public class Application {
@@ -30,17 +28,13 @@ public class Application {
 
     public static final CouchDB DB = CouchDB.create("abowind");
     private static Application application = null;
-    private final Registry registry = new Registry();
     private final LayoutPanel contentPanel = new LayoutPanel(new FillLayout());
     private final TemplateDao templateDao = new TemplateDao();
     private LayoutPanel buttons = new LayoutPanel(new BoxLayout(BoxLayout.Orientation.VERTICAL, BoxLayout.Alignment.END));
     private LayoutPanel mp = new LayoutPanel(new BoxLayout(BoxLayout.Alignment.END));
     private LayoutPanel layoutPanel;
-// -------------------------- STATIC METHODS --------------------------
 
-    public static Registry registry() {
-        return application.registry;
-    }
+// -------------------------- STATIC METHODS --------------------------
 
     public static synchronized Application application() {
         if (application == null) {
@@ -59,7 +53,6 @@ public class Application {
         a.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent clickEvent) {
                 showBp();
-
             }
         });
         mp.add(a);
@@ -93,27 +86,6 @@ public class Application {
         });
     }
 
-    private void fixLayoutSize() {
-        final int height = Window.getClientHeight();
-        final int width = Window.getClientWidth();
-
-        layoutPanel.setHeight(String.valueOf(height - 250) + "px");
-        layoutPanel.layout();
-
-        final RootPanel bgi = RootPanel.get("bg_image");
-        if (bgi != null) {
-            ImageElement bge = bgi.getElement().cast();
-            bge.setWidth(width);
-            bge.setHeight(height);
-        }
-    }
-
-
-    private void showBp() {
-        mp.setVisible(false);
-        setContent(buttons);
-    }
-
     private void createBp() {
         buttons.add(new Button("template creation", new ClickHandler() {
             public void onClick(ClickEvent clickEvent) {
@@ -127,12 +99,7 @@ public class Application {
                 EquipmentEditorAction.instance().execute();
             }
         }), new BoxLayoutData(250, 40));
-        buttons.add(new Button("inspection overview / survey", new ClickHandler() {
-            public void onClick(ClickEvent clickEvent) {
-                showMp();
-                InspectionPoolAction.instance().execute();
-            }
-        }), new BoxLayoutData(250, 40));
+
         buttons.setPadding(20);
         buttons.setWidgetSpacing(20);
         FlexTable logos = new FlexTable();
@@ -160,37 +127,10 @@ public class Application {
         mp.setVisible(true);
     }
 
-    private MenuBar createMenuPanel() {
-        MenuBar menuBar = new MenuBar();
-
-        menuBar.addItem(MENU.inspection(), menu(
-                InspectionPoolAction.instance()
-        ));
-
-        menuBar.addItem(MENU.administration(), menu(
-                TemplateEditorAction.instance(),
-                EquipmentEditorAction.instance()
-        ));
-
-        menuBar.addItem(MENU.statistics(), menu(
-        ));
-
-        menuBar.addItem(MENU.help(), menu(
-        ));
-
-
-        return menuBar;
+    private void showBp() {
+        mp.setVisible(false);
+        setContent(buttons);
     }
-
-    private MenuBar menu(MenuItem... items) {
-        MenuBar menu = new MenuBar(true);
-        for (MenuItem item : items) {
-            menu.addItem(item);
-        }
-        return menu;
-    }
-
-// -------------------------- OTHER METHODS --------------------------
 
     public void setContent(Widget widget) {
         contentPanel.clear();
@@ -206,6 +146,23 @@ public class Application {
             }
         });
     }
+
+    private void fixLayoutSize() {
+        final int height = Window.getClientHeight();
+        final int width = Window.getClientWidth();
+
+        layoutPanel.setHeight(String.valueOf(height - 250) + "px");
+        layoutPanel.layout();
+
+        final RootPanel bgi = RootPanel.get("bg_image");
+        if (bgi != null) {
+            ImageElement bge = bgi.getElement().cast();
+            bge.setWidth(width);
+            bge.setHeight(height);
+        }
+    }
+
+// -------------------------- OTHER METHODS --------------------------
 
     public TemplateDao templateDao() {
         return templateDao;

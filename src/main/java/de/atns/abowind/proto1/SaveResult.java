@@ -1,7 +1,6 @@
 package de.atns.abowind.proto1;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 
 /**
  * @author mwolter
@@ -25,7 +24,7 @@ public class SaveResult extends JavaScriptObject {
 
     public final native String getError() /*-{ return this.error; }-*/;
 
-    public final native String getId() /*-{ return this.id; }-*/;
-
     public final native String getRev() /*-{ return this.rev; }-*/;
+
+    public final native String getId() /*-{ return this.id; }-*/;
 }

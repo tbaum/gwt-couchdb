@@ -7,31 +7,30 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import de.atns.abowind.model.*;
-import static de.atns.abowind.proto1.constants.ButtonImages.BUTTON_IMAGES;
-import de.atns.abowind.proto1.constants.Menu;
+import de.atns.abowind.proto1.model.*;
 import de.atns.abowind.proto1.model.DecoratedTemplate;
 import org.gwt.mosaic.actions.client.Action;
 import org.gwt.mosaic.actions.client.ButtonBindings;
 import org.gwt.mosaic.actions.client.CommandAction;
-import static org.gwt.mosaic.forms.client.layout.CellConstraints.xy;
-import static org.gwt.mosaic.forms.client.layout.CellConstraints.xyw;
 import org.gwt.mosaic.forms.client.layout.FormLayout;
 import org.gwt.mosaic.ui.client.ComboBox;
 import org.gwt.mosaic.ui.client.ListBox;
 import org.gwt.mosaic.ui.client.layout.BorderLayout;
-import static org.gwt.mosaic.ui.client.layout.BorderLayout.Region.*;
 import org.gwt.mosaic.ui.client.layout.BorderLayoutData;
 import org.gwt.mosaic.ui.client.layout.LayoutPanel;
 import org.gwt.mosaic.ui.client.list.DefaultComboBoxModel;
 import org.gwt.mosaic.ui.client.list.ListDataEvent;
 import org.gwt.mosaic.ui.client.list.ListDataListener;
 import org.gwt.mosaic.ui.client.util.ButtonHelper;
-import static org.gwt.mosaic.ui.client.util.ButtonHelper.ButtonLabelType.TEXT_ON_RIGHT;
-import static org.gwt.mosaic.ui.client.util.ButtonHelper.createButtonLabel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.atns.abowind.proto1.constants.ButtonImages.BUTTON_IMAGES;
+import static org.gwt.mosaic.forms.client.layout.CellConstraints.xy;
+import static org.gwt.mosaic.ui.client.layout.BorderLayout.Region.*;
+import static org.gwt.mosaic.ui.client.util.ButtonHelper.ButtonLabelType.TEXT_ON_RIGHT;
+import static org.gwt.mosaic.ui.client.util.ButtonHelper.createButtonLabel;
 
 /**
  * @author tbaum
@@ -75,7 +74,6 @@ public class TemplateDesignerPanel extends LayoutPanel {
     private final TemplateDao templateDao = Application.application().templateDao();
 
     private TreeItem selectedTemplateItem;
-    private TreeItem selectedStatusGroupItem;
     private DefaultComboBoxModel<TemplateSelection> templateSelection;
     private DefaultComboBoxModel<StatusGroupSelection> statusGroupSelection;
     private TemplateSelection currentTemplateSelection = null;
@@ -113,7 +111,7 @@ public class TemplateDesignerPanel extends LayoutPanel {
         final Button addButton = new Button(
                 createButtonLabel(
                         BUTTON_IMAGES.addTemplate(),
-                        Menu.MENU.templateAdd(),
+                        "Add Template",
                         TEXT_ON_RIGHT)
         );
 
@@ -150,6 +148,38 @@ public class TemplateDesignerPanel extends LayoutPanel {
         return controls;
     }
 
+    private ComboBox<TemplateSelection> createTemplateSelector() {
+        final ComboBox<TemplateSelection> templateSelector = new ComboBox<TemplateSelection>();
+        templateSelection = (DefaultComboBoxModel<TemplateSelection>) templateSelector.getModel();
+
+        templateSelector.setCellRenderer(new ComboBox.ComboBoxCellRenderer<TemplateSelection>() {
+            public String getDisplayText(TemplateSelection templateSelection) {
+                return templateSelection.getName();
+            }
+
+            public void renderCell(ListBox<TemplateSelection> templateSelectionListBox, int i, int i1, TemplateSelection templateSelection) {
+                templateSelectionListBox.setText(i, i1, templateSelection.getName());
+            }
+        });
+
+
+        templateSelection.addListDataListener(new ListDataListener() {
+            public void contentsChanged(ListDataEvent listDataEvent) {
+                TemplateSelection selection = templateSelection.getSelectedItem();
+                if (selection != currentTemplateSelection) {
+                    selectItem(selection);
+                }
+            }
+
+            public void intervalAdded(ListDataEvent listDataEvent) {
+            }
+
+            public void intervalRemoved(ListDataEvent listDataEvent) {
+            }
+        });
+        return templateSelector;
+    }
+
     private ComboBox<StatusGroupSelection> createStatusGroupSelector() {
         final ComboBox<StatusGroupSelection> statusGroupSelector = new ComboBox<StatusGroupSelection>();
         statusGroupSelection = (DefaultComboBoxModel<StatusGroupSelection>) statusGroupSelector.getModel();
@@ -181,52 +211,6 @@ public class TemplateDesignerPanel extends LayoutPanel {
         });
 
         return statusGroupSelector;
-    }
-
-    private void updateStatusGroupSelector() {
-        statusGroupSelection.clear();
-
-        ViewResult<StatusGroup> t = Application.DB.view("couch/statusgroup_all");
-        List<StatusGroup> statusGroups = t.toList();
-
-        for (StatusGroup statusGroup : statusGroups) {
-            StatusGroupSelection sgs = new StatusGroupSelection(statusGroup.getName(), statusGroup.getId(), statusGroup.getStatusOptions() );
-            
-            statusGroupSelection.add(sgs);
-        }
-       
-    }
-
-    private ComboBox<TemplateSelection> createTemplateSelector() {
-        final ComboBox<TemplateSelection> templateSelector = new ComboBox<TemplateSelection>();
-        templateSelection = (DefaultComboBoxModel<TemplateSelection>) templateSelector.getModel();
-
-        templateSelector.setCellRenderer(new ComboBox.ComboBoxCellRenderer<TemplateSelection>() {
-            public String getDisplayText(TemplateSelection templateSelection) {
-                return templateSelection.getName();
-            }
-
-            public void renderCell(ListBox<TemplateSelection> templateSelectionListBox, int i, int i1, TemplateSelection templateSelection) {
-                templateSelectionListBox.setText(i, i1, templateSelection.getName());
-            }
-        });
-
-
-        templateSelection.addListDataListener(new ListDataListener() {
-            public void contentsChanged(ListDataEvent listDataEvent) {
-                TemplateSelection selection = templateSelection.getSelectedItem();
-                if (selection != currentTemplateSelection) {
-                    selectItem(selection);
-                }
-            }
-
-            public void intervalAdded(ListDataEvent listDataEvent) {
-            }
-
-            public void intervalRemoved(ListDataEvent listDataEvent) {
-            }
-        });
-        return templateSelector;
     }
 
     private Template createTemplate(TreeItem parent, final String name) {
@@ -278,6 +262,19 @@ public class TemplateDesignerPanel extends LayoutPanel {
             createStatusEditAction.setEnabled(selected != null);
             createStatusAction.setEnabled(selected != null);
             createNodeActionInside.setEnabled(selected != null);
+        }
+    }
+
+    private void updateStatusGroupSelector() {
+        statusGroupSelection.clear();
+
+        ViewResult<StatusGroup> t = Application.DB.view("couch/statusgroup_all");
+        List<StatusGroup> statusGroups = t.toList();
+
+        for (StatusGroup statusGroup : statusGroups) {
+            StatusGroupSelection sgs = new StatusGroupSelection(statusGroup.getName(), statusGroup.getId(), statusGroup.getStatusOptions());
+
+            statusGroupSelection.add(sgs);
         }
     }
 
@@ -381,8 +378,6 @@ public class TemplateDesignerPanel extends LayoutPanel {
         }
     }
 
-
-
     private void createTree(List<Template> result, String parent, int dep, Callback<TreeItem> cb) {
         for (final Template template : result) {
             final List<String> pt = template.getPath();
@@ -411,11 +406,8 @@ public class TemplateDesignerPanel extends LayoutPanel {
         return createNodeActionInside;
     }
 
-
     private void createStatus(final TreeItem selectedItem, final String text) {
         try {
-
-
             StatusGroup nt = StatusGroup.create(Application.DB.newUuid(), text);
             Application.DB.save(nt);
 

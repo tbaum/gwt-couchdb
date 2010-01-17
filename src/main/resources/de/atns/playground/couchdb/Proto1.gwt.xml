@@ -1,0 +1,43 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.0//EN"
+        "http://google-web-toolkit.googlecode.com/svn/tags/2.0.0/distro-source/core/src/gwt-module.dtd">
+
+<module>
+
+
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name='com.google.gwt.core.Core'/>
+    <inherits name='com.google.gwt.i18n.I18N'/>
+
+    <inherits name="com.google.gwt.json.JSON"/>
+
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+    <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+
+    <inherits name="org.gwt.mosaic.Mosaic"/>
+    <inherits name="org.gwt.mosaic.ui.UI"/>
+    <inherits name="org.gwt.mosaic.theme.standard.Standard"/>
+    <inherits name='org.gwt.mosaic.theme.chrome.Chrome'/>
+    <inherits name='org.gwt.mosaic.forms.Forms'/>
+    <inherits name='org.gwt.mosaic.actions.Actions'/>
+
+    <!--   <inherits name='org.gwt.mosaic.Mosaic'/>
+
+
+   <inherits name='org.gwt.mosaic.theme.standard.StandardResources'/>
+   <inherits name="org.gwt.mosaic.theme.chrome.ChromeResources"/>
+   <inherits name="org.gwt.mosaic.theme.dark.DarkResources"/>
+   <inherits name="org.gwt.mosaic.theme.aegean.AegeanResources"/>
+
+   <inherits name='org.gwt.mosaic.theme.aegean.Aegean'/>
+    -->
+    <inherits name="com.google.gwt.user.Debug"/>
+    <set-property name="gwt.enableDebugId" value="true"/>
+
+    <entry-point class="de.atns.playground.couchdb.client.Proto1"/>
+    <public path="public"/>
+
+    <stylesheet src='Proto1.css'/>
+    <script src='json2.js'/>
+    <script src='couch.js'/>
+
+</module>

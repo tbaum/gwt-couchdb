@@ -9,14 +9,10 @@
     <servlet>
         <servlet-name>proxy</servlet-name>
         <servlet-class>de.atns.common.ProxyServlet</servlet-class>
-    </servlet>
+    </servlet> 
     <servlet-mapping>
         <servlet-name>proxy</servlet-name>
-        <url-pattern>/db1/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>proxy</servlet-name>
-        <url-pattern>/abowind/*</url-pattern>
+        <url-pattern>/gwt/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>proxy</servlet-name>

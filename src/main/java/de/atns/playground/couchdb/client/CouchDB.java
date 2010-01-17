@@ -18,9 +18,10 @@ public class CouchDB extends JavaScriptObject {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public final native String newUuid() throws Exception /*-{ return this.newUuid(); }-*/;
+    public final native String newUuid() throws Exception /*-{ return this.newUuids(1)[0]; }-*/;
 
     //TODO create own exception-tree
+
     public final native <T extends JavaScriptObject> T open(String id) /*-{ return this.open(id); }-*/;
 
     public final native <T extends JavaScriptObject> SaveResult save(T document) throws Exception /*-{ return this.save(document); }-*/;

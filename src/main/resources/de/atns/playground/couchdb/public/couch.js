@@ -21,10 +21,6 @@ function CouchDB(name, httpHeaders) {
     // use this to check result http status and headers.
     this.last_req = null;
 
-    this.newUuid = function () {
-        return CouchDB.newUuids(1)[0];
-    }
-
     this.request = function(method, uri, requestOptions) {
         requestOptions = requestOptions || {}
         requestOptions.headers = combine(requestOptions.headers, httpHeaders)
@@ -131,8 +127,8 @@ function CouchDB(name, httpHeaders) {
     }
 
     // Applies the map function to the contents of database and returns the results.
-    this.query = function(mapFun, reduceFun, options, keys) {
-        var body = {language: "javascript"};
+    this.query = function(mapFun, reduceFun, options, keys, language) {
+        var body = {language: language || "javascript"};
         if (keys) {
             body.keys = keys;
         }
@@ -328,7 +324,9 @@ CouchDB.createUser = function(username, password, email, roles, basicAuth) {
         }
     }
     var headers = {"Content-Type": "application/x-www-form-urlencoded"};
-    if (!basicAuth) {
+    if (basicAuth) {
+        headers['Authorization'] = basicAuth
+    } else {
         headers['X-CouchDB-WWW-Authenticate'] = 'Cookie';
     }
 

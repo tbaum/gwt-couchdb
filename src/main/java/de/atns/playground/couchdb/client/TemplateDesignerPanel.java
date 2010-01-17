@@ -25,6 +25,7 @@ import org.gwt.mosaic.ui.client.util.ButtonHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.allen_sauer.gwt.log.client.Log.debug;
 import static de.atns.playground.couchdb.client.constants.ButtonImages.BUTTON_IMAGES;
 import static org.gwt.mosaic.forms.client.layout.CellConstraints.xy;
 import static org.gwt.mosaic.ui.client.layout.BorderLayout.Region.*;
@@ -51,7 +52,7 @@ public class TemplateDesignerPanel extends LayoutPanel {
     private final CommandAction createStatusEditAction = createCommand(new Command() {
         public void execute() {
             if (selectedTemplateItem != null) {
-                System.err.println("Blablubb");
+                debug("Blablubb");
                 TemplateStatusEdit test = new TemplateStatusEdit();
                 test.showModal();
             }
@@ -125,7 +126,7 @@ public class TemplateDesignerPanel extends LayoutPanel {
                     selectItem(template.getId());
                 }
                 catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    debug(e.getMessage());
                 }
             }
         });
@@ -139,7 +140,7 @@ public class TemplateDesignerPanel extends LayoutPanel {
         DOM.sinkEvents(e, Event.ONMOUSEMOVE | Event.ONMOUSEOUT | Event.ONMOUSEOVER);
         DOM.setEventListener(e, new EventListener() {
             public void onBrowserEvent(final Event event) {
-                System.err.println(event.toString() + " " + event.getType());
+                debug(event.toString() + " " + event.getType());
             }
         });
         */
@@ -214,15 +215,18 @@ public class TemplateDesignerPanel extends LayoutPanel {
 
     private Template createTemplate(TreeItem parent, final String name) {
         try {
+            debug("creating new Template name=" + name);
             final List<String> path =
                     parent == null || !(parent.getUserObject() instanceof Template)
                             ? new ArrayList<String>()
                             : ((Template) parent.getUserObject()).getPath();
 
-            Template nt = Template.create(Application.DB.newUuid(), name, path);
+            final String uuid = Application.DB.newUuid();
+            debug("creating new Template uuid=" + uuid);
+            Template nt = Template.create(uuid, name, path);
             Application.DB.save(nt);
 
-            System.err.println("saved nt " + nt.getId());
+            debug("saved nt " + nt.getId());
 
             if (parent != null) {
                 final TreeItem treeItem = createTreeItem(nt);
@@ -410,7 +414,7 @@ public class TemplateDesignerPanel extends LayoutPanel {
             StatusGroup nt = StatusGroup.create(Application.DB.newUuid(), text);
             Application.DB.save(nt);
 
-            System.err.println("saved StatusGroup " + nt.getId());
+            debug("saved StatusGroup " + nt.getId());
 
             if (selectedItem != null) {
                 Template template = (Template) selectedItem.getUserObject();

@@ -10,7 +10,6 @@ import de.atns.playground.couchdb.client.model.TemplateSelection;
 import org.gwt.mosaic.actions.client.Action;
 import org.gwt.mosaic.actions.client.ButtonBindings;
 import org.gwt.mosaic.actions.client.CommandAction;
-import static org.gwt.mosaic.forms.client.layout.CellConstraints.xy;
 import org.gwt.mosaic.forms.client.layout.FormLayout;
 import org.gwt.mosaic.ui.client.ComboBox;
 import org.gwt.mosaic.ui.client.InfoPanel;
@@ -24,6 +23,9 @@ import org.gwt.mosaic.ui.client.list.ListDataListener;
 import org.gwt.mosaic.ui.client.util.ButtonHelper;
 
 import java.util.*;
+
+import static com.allen_sauer.gwt.log.client.Log.debug;
+import static org.gwt.mosaic.forms.client.layout.CellConstraints.xy;
 
 /**
  * @author tbaum
@@ -92,15 +94,15 @@ public class EquipmentDesignerPanel extends LayoutPanel {
         final Map<String, Template> id2temp = new HashMap<String, Template>();
         final Set<String> ids = new HashSet<String>();
         //final Set<Template> templ = new LinkedHashSet<Template>();
-        System.err.println("---- update tree ---");
+        debug("---- update tree ---");
         for (String s : sect) {
-            System.err.println("loading template-fragment " + s);
+            debug("loading template-fragment " + s);
             Template t = Application.DB.open(s);
             final List<String> path = t.getPath();
             templateDao.withTemplate(new Callback<List<Template>>() {
                 public void handle(List<Template> template) {
                     for (Template template1 : template) {
-                        System.err.println(" ->" + template1.getId() + " " + template1.getName() + " /" + template1.getPath());
+                        debug(" ->" + template1.getId() + " " + template1.getName() + " /" + template1.getPath());
                         //   String pa = getPath(id2name, template1.getId());
                         ids.addAll(template1.getPath());
                         id2temp.put(template1.getId(), template1);
@@ -143,7 +145,6 @@ public class EquipmentDesignerPanel extends LayoutPanel {
             s += "\n";
         }
         dbg.setText(s);
-        //   System.err.println(templ);
     }
 
     private String mkp(List<String> pathName) {
@@ -216,7 +217,7 @@ public class EquipmentDesignerPanel extends LayoutPanel {
         DOM.sinkEvents(e, Event.ONMOUSEMOVE | Event.ONMOUSEOUT | Event.ONMOUSEOVER);
         DOM.setEventListener(e, new EventListener() {
             public void onBrowserEvent(final Event event) {
-                System.err.println(event.toString() + " " + event.getType());
+                debug(event.toString() + " " + event.getType());
             }
         });
         */

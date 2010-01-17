@@ -6,13 +6,11 @@
     <version>1.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gwtVersion>1.7.0</gwtVersion>
     </properties>
-    <build>
 
+    <build>
         <plugins>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
@@ -50,6 +48,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <draftCompile>true</draftCompile>
+                    <style>PRETTY</style>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -65,50 +67,6 @@
     </build>
 
     <dependencies>
-        <!--
-<dependency>
-<groupId>com.google.gwt</groupId>
-<artifactId>gwt-servlet</artifactId>
-<version>${gwtVersion}</version>
-<scope>runtime</scope>
-</dependency>
-<dependency>
-<groupId>com.google.gwt</groupId>
-<artifactId>gwt-user</artifactId>
-<version>${gwtVersion}</version>
-<scope>provided</scope>
-</dependency>
-
-
-
-<dependency>
-<groupId>atns.ext</groupId>
-<artifactId>gwt-mosaic</artifactId>
-<version>0.3.0-rc1</version>
-</dependency>
-<dependency>
-<groupId>atns.ext</groupId>
-<artifactId>gwt-beans-binding</artifactId>
-<version>0.2.4</version>
-</dependency>
-<dependency>
-<groupId>atns.ext</groupId>
-<artifactId>gwt-dnd</artifactId>
-<version>2.6.5</version>
-</dependency>
-<dependency>
-<groupId>atns.ext</groupId>
-<artifactId>gwtx</artifactId>
-<version>1.5.2</version>
-</dependency>
-<dependency>
-<groupId>atns.ext</groupId>
-<artifactId>gwt-incubator-trunk</artifactId>
-<version>0.0.-r1684</version>
-</dependency>
-        -->
-
-
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
@@ -120,6 +78,11 @@
             <artifactId>gwt-user</artifactId>
             <version>2.0.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gwt-log</groupId>
+            <artifactId>gwt-log</artifactId>
+            <version>2.6.2</version>
         </dependency>
 
         <!-- mosaic -->

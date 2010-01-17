@@ -18,7 +18,7 @@ public class CouchDB extends JavaScriptObject {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public final native String newUuid() throws Exception /*-{ return this.newUuids(1)[0]; }-*/;
+    public final native String newUuid() throws Exception /*-{ return this.newUuid(); }-*/;
 
     //TODO create own exception-tree
 

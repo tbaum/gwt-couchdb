@@ -1,9 +1,9 @@
 package de.atns.playground.couchdb.client.model;
 
-import de.atns.playground.couchdb.client.model.Template;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.allen_sauer.gwt.log.client.Log.debug;
 
 /**
  * @author tbaum
@@ -20,7 +20,7 @@ public class DecoratedTemplate {
     }
 
     private void dump(int i) {
-        System.err.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t".substring(0, i) + raw.getId() + "\t" + raw.getName());
+        debug("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t".substring(0, i) + raw.getId() + "\t" + raw.getName());
         for (DecoratedTemplate child : children) {
             child.dump(i + 1);
         }
